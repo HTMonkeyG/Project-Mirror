@@ -165,4 +165,6 @@ function place(originalPos, oreSize, rng) {
 
 //var seed = Long.fromString("7290775714567635677");
 var seed = Long.fromString("20240824");
-console.log(gen(seed, params, ...ChunkPos(62467, -30187)))
+//console.log(gen(seed, params, ...ChunkPos(62467, -30187)))
+
+console.log("aaa".hashCode().toString())
