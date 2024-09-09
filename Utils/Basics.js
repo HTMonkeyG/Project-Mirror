@@ -424,8 +424,8 @@ var Long = (function () {
   return b
 })();
 
-var MT = (function (a) {
-  var b = function (a) {
+class MT {
+  constructor(a) {
     null == a && (a = (new Date).getTime()),
       this.N = 624,
       this.M = 397,
@@ -435,8 +435,9 @@ var MT = (function (a) {
       this.mt = new Array(this.N),
       this.mti = this.N + 1,
       a.constructor == Array ? (this.init_by_array(a, a.length), this.seed = null) : (this.init_seed(a), this.seed = a)
-  };
-  b.prototype.init_seed = function (a) {
+  }
+
+  init_seed(a) {
     this.seed = a;
     for (this.mt[0] = a >>> 0,
       this.mti = 1; this.mti < this.N; this.mti++)
@@ -444,104 +445,103 @@ var MT = (function (a) {
         this.mt[this.mti] = (1812433253 * ((4294901760 & a) >>> 16) << 16) + 1812433253 * (65535 & a) + this.mti,
         this.mt[this.mti] >>>= 0
   }
-    ,
-    b.prototype.init_by_array = function (a, b) {
-      this.seed = null;
-      var c, d, e;
-      for (this.init_seed(19650218),
-        c = 1,
-        d = 0,
-        e = this.N > b ? this.N : b; e; e--) {
-        var f = this.mt[c - 1] ^ this.mt[c - 1] >>> 30;
-        this.mt[c] = (this.mt[c] ^ (1664525 * ((4294901760 & f) >>> 16) << 16) + 1664525 * (65535 & f)) + a[d] + d,
-          this.mt[c] >>>= 0,
-          d++,
-          ++c >= this.N && (this.mt[0] = this.mt[this.N - 1],
-            c = 1),
-          d >= b && (d = 0)
-      }
-      for (e = this.N - 1; e; e--)
-        f = this.mt[c - 1] ^ this.mt[c - 1] >>> 30,
-          this.mt[c] = (this.mt[c] ^ (1566083941 * ((4294901760 & f) >>> 16) << 16) + 1566083941 * (65535 & f)) - c,
-          this.mt[c] >>>= 0,
-          ++c >= this.N && (this.mt[0] = this.mt[this.N - 1],
-            c = 1);
-      this.mt[0] = 2147483648
+
+  init_by_array(a, b) {
+    this.seed = null;
+    var c, d, e;
+    for (this.init_seed(19650218),
+      c = 1,
+      d = 0,
+      e = this.N > b ? this.N : b; e; e--) {
+      var f = this.mt[c - 1] ^ this.mt[c - 1] >>> 30;
+      this.mt[c] = (this.mt[c] ^ (1664525 * ((4294901760 & f) >>> 16) << 16) + 1664525 * (65535 & f)) + a[d] + d,
+        this.mt[c] >>>= 0,
+        d++,
+        ++c >= this.N && (this.mt[0] = this.mt[this.N - 1],
+          c = 1),
+        d >= b && (d = 0)
     }
-    ,
-    b.prototype.random_int = function () {
-      var a, b = new Array(0, this.MATRIX_A);
-      if (this.mti >= this.N) {
-        var c;
-        for (this.mti == this.N + 1 && this.init_seed(5489),
-          c = 0; c < this.N - this.M; c++)
-          a = this.mt[c] & this.UPPER_MASK | this.mt[c + 1] & this.LOWER_MASK,
-            this.mt[c] = this.mt[c + this.M] ^ a >>> 1 ^ b[1 & a];
-        for (; c < this.N - 1; c++)
-          a = this.mt[c] & this.UPPER_MASK | this.mt[c + 1] & this.LOWER_MASK,
-            this.mt[c] = this.mt[c + (this.M - this.N)] ^ a >>> 1 ^ b[1 & a];
-        a = this.mt[this.N - 1] & this.UPPER_MASK | this.mt[0] & this.LOWER_MASK,
-          this.mt[this.N - 1] = this.mt[this.M - 1] ^ a >>> 1 ^ b[1 & a],
-          this.mti = 0
-      }
-      return a = this.mt[this.mti++],
-        a ^= a >>> 11,
-        a ^= a << 7 & 2636928640,
-        a ^= a << 15 & 4022730752,
-        (a ^= a >>> 18) >>> 0
+    for (e = this.N - 1; e; e--)
+      f = this.mt[c - 1] ^ this.mt[c - 1] >>> 30,
+        this.mt[c] = (this.mt[c] ^ (1566083941 * ((4294901760 & f) >>> 16) << 16) + 1566083941 * (65535 & f)) - c,
+        this.mt[c] >>>= 0,
+        ++c >= this.N && (this.mt[0] = this.mt[this.N - 1],
+          c = 1);
+    this.mt[0] = 2147483648
+  }
+
+  random_int() {
+    var a, b = new Array(0, this.MATRIX_A);
+    if (this.mti >= this.N) {
+      var c;
+      for (this.mti == this.N + 1 && this.init_seed(5489),
+        c = 0; c < this.N - this.M; c++)
+        a = this.mt[c] & this.UPPER_MASK | this.mt[c + 1] & this.LOWER_MASK,
+          this.mt[c] = this.mt[c + this.M] ^ a >>> 1 ^ b[1 & a];
+      for (; c < this.N - 1; c++)
+        a = this.mt[c] & this.UPPER_MASK | this.mt[c + 1] & this.LOWER_MASK,
+          this.mt[c] = this.mt[c + (this.M - this.N)] ^ a >>> 1 ^ b[1 & a];
+      a = this.mt[this.N - 1] & this.UPPER_MASK | this.mt[0] & this.LOWER_MASK,
+        this.mt[this.N - 1] = this.mt[this.M - 1] ^ a >>> 1 ^ b[1 & a],
+        this.mti = 0
     }
-    ,
-    b.prototype.random_int31 = function () {
-      return this.random_int() >>> 1
-    }
-    ,
-    b.prototype.random_incl = function () {
-      return this.random_int() * (1 / 4294967295)
-    }
-    ,
-    b.prototype.random = function () {
-      return this.random_int() * (1 / 4294967296)
-    }
-    ,
-    b.prototype.random_excl = function () {
-      return (this.random_int() + .5) * (1 / 4294967296)
-    }
-    ,
-    b.prototype.random_long = function () {
-      return (67108864 * (this.random_int() >>> 5) + (this.random_int() >>> 6)) * (1 / 9007199254740992)
-    }
-    ,
-    b.prototype.setSeed = function (a) {
-      this.init_seed("number" == typeof a ? a : a.toInt())
-    }
-    ,
-    b.prototype.nextInt = function (a) {
-      var b;
-      return null == a ? this.random_int() >>> 1 : (b = this.random_int(),
-        Long.fromInt(b).and(Long.fromNumber(4294967295)).toNumber() % a);
-    }
-    ,
-    b.prototype.nextIntRaw = function () {
-      return this.random_int()
-    }
-    ,
-    b.prototype.nextIntRange = function (a, b) {
-      return b > a ? a + this.nextInt(b - a) : a
-    }
-    ,
-    b.prototype.nextFloat = function () {
-      return Math.fround(this.random())
-    }
-    ,
-    b.prototype.nextDouble = function () {
-      return this.random()
-    }
-    ,
-    b.prototype.nextBoolean = function () {
-      return 0 != (134217728 & this.random_int())
-    }
-  return b
-})();
+    return a = this.mt[this.mti++],
+      a ^= a >>> 11,
+      a ^= a << 7 & 2636928640,
+      a ^= a << 15 & 4022730752,
+      (a ^= a >>> 18) >>> 0
+  }
+
+  random_int31() {
+    return this.random_int() >>> 1
+  }
+
+  random_incl() {
+    return this.random_int() * (1 / 4294967295)
+  }
+
+  random() {
+    return this.random_int() * (1 / 4294967296)
+  }
+
+  random_excl() {
+    return (this.random_int() + .5) * (1 / 4294967296)
+  }
+
+  random_long() {
+    return (67108864 * (this.random_int() >>> 5) + (this.random_int() >>> 6)) * (1 / 9007199254740992)
+  }
+
+  setSeed(a) {
+    this.init_seed("number" == typeof a ? a : a.toInt())
+  }
+
+  nextInt(a) {
+    var b;
+    return null == a ? this.random_int() >>> 1 : (b = this.random_int(),
+      Long.fromInt(b).and(Long.fromNumber(4294967295)).toNumber() % a);
+  }
+
+  nextIntRaw() {
+    return this.random_int()
+  }
+
+  nextIntRange(a, b) {
+    return b > a ? a + this.nextInt(b - a) : a
+  }
+
+  nextFloat() {
+    return Math.fround(this.random())
+  }
+
+  nextDouble() {
+    return this.random()
+  }
+
+  nextBoolean() {
+    return 0 != (134217728 & this.random_int())
+  }
+}
 
 exports.MT = MT;
 exports.Long = Long;

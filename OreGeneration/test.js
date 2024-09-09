@@ -1,5 +1,5 @@
 const fs = require('fs'),
-  { MT, Long } = require('./utils.js');
+  { MT, Long } = require('../Utils/Basics.js');
 
 String.prototype.hashCode = function () {
   var hash = Long.fromString("CBF29CE484222325", false, 16)
