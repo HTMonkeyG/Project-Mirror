@@ -18,6 +18,8 @@ class BlockVolume {
     else
       throw new RangeError("Invalid block pos")
   }
+
+  getIndexBounds() { return this.maxIndex }
 }
 
 module.exports = BlockVolume;

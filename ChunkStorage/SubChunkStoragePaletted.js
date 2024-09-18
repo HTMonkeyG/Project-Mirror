@@ -10,15 +10,26 @@ class SubChunkStorage {
   }
 
   setBlock(block, posInChunk) {
-    var eleIndex = (((posInChunk.x & 0xF) * 0xF) + posInChunk.z & 0xF) * 0xF + posInChunk.y & 0xF;
+    var eleIndex = (((posInChunk.x & 0xF) * 0xF) + posInChunk.z & 0xF) * 0xF + posInChunk.y & 0xF
+      , wordIndex = Math.floor(eleIndex * this.bitsPerElement / 16)
+      , inWord = eleIndex * this.bitsPerElement % 16
+      , inNextWord = 16 - inWord
+      , i = 0;
     for (var e of this.palette) {
       if (e == block) {
-        
+        this.data[wordIndex] = (this.data[wordIndex] & (0xFFFF >> inWord)) | (i >> inWord);
+        inNextWord < 16 && (this.data[wordIndex + 1] = (this.data[wordIndex + 1] & (0xFFFF << inNextWord)) | ((i << inNextWord) & 0xFFFF));
         return;
       }
+      i++;
     }
 
+    if (this.data.length >= this.paletteMaxLength)
+      this.makeExpand();
 
+    this.data.push(block);
+    this.data[wordIndex] = (this.data[wordIndex] & (0xFFFF >> inWord)) | (i >> inWord);
+    inNextWord < 16 && (this.data[wordIndex + 1] = (this.data[wordIndex + 1] & (0xFFFF << inNextWord)) | ((i << inNextWord) & 0xFFFF));
   }
 }
 

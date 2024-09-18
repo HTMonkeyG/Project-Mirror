@@ -8,3 +8,5 @@
 |-|Pass|（地物生成的）阶段|pass作名词有阶段含义|
 |``OverworldGenerator::postProcess``|Post Process|后处理|-|
 |``OreVeinifier::OreVeinifier``|Ore Veinifier|矿脉生成器|vein矿脉+动词后缀-ify+名词后缀-er|
+|``TheEndGenerator::generateDensityCellsForChunk``|Density Cell|密度元|cell可译为单元，简写后为密度元|
+|``OverworldGeneratorMultinoise::OverworldGeneratorMultinoise``|Multinoise|多重噪声|-|
