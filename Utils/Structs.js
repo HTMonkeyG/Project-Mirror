@@ -66,9 +66,15 @@ class Vec3 {
   }
 
   constructor(d, d2, d3) {
-    this.x = d;
-    this.y = d2;
-    this.z = d3;
+    if (typeof d == "number" && typeof d2 == "number" && typeof d3 == "number") {
+      this.x = d;
+      this.y = d2;
+      this.z = d3;
+    } else if (typeof d == "number")
+      this.x = this.y = this.z = d;
+    else
+      this.x = this.y = this.z = 0
+    return this
   }
 
   vectorTo(vec3) {
@@ -91,12 +97,42 @@ class Vec3 {
     return new Vec3(this.y * vec3.z - this.z * vec3.y, this.z * vec3.x - this.x * vec3.z, this.x * vec3.y - this.y * vec3.x);
   }
 
-  subtract(vec3) {
-    return new Vec3(this.x - vec3.x, this.y - vec3.y, this.z - vec3.z)
+  /**
+   * Vector addition.
+   * 
+   * Add a constant or a vector.
+   * @param {Vec3|Number} a
+   * @returns {Vec3}
+   */
+  add(a) {
+    if (typeof a == "object")
+      return new Vec3(this.x + a.x, this.y + a.y, this.z + a.z);
+    if (typeof a == "number")
+      return new Vec3(this.x + a, this.y + a, this.z + a);
+    throw new TypeError();
   }
 
-  add(vec3) {
-    return new Vec3(this.x + vec3.x, this.y + vec3.x, this.z + vec3.x);
+  /**
+   * Vector subtraction.
+   * 
+   * Subtract a constant or a vector.
+   * @param {Vec3|Number} a
+   * @returns {Vec3}
+   */
+  sub(a) {
+    if (typeof a == "object")
+      return new Vec3(this.x - a.x, this.y - a.y, this.z - a.z);
+    if (typeof a == "number")
+      return new Vec3(this.x - a, this.y - a, this.z - a);
+    throw new TypeError();
+  }
+
+  clamp(a, b) {
+    return new Vec3(
+      Mth.clamp(this.x, a, b),
+      Mth.clamp(this.y, a, b),
+      Mth.clamp(this.z, a, b)
+    )
   }
 
   closerThan(vec3, d) {
@@ -111,16 +147,26 @@ class Vec3 {
     return this.distanceTo(vec3) ** 2;
   }
 
+  /**
+   * Vector multiplication.
+   * @param {Number} d
+   * @returns {Vec3}
+   */
   scale(d) {
-    return this.dot(d, d, d);
+    return new Vec3(this.x * d, this.y * d, this.z * d)
   }
 
   reverse() {
     return this.scale(-1.0);
   }
 
-  dot(vec3) {
-    return new Vec3(vec3.x * this.x, vec3.y * this.x, vec3.z * this.x);
+  /**
+   * Multiply the components separately.
+   * @param {Vec3} a
+   * @returns {Vec3}
+   */
+  mul(vec3) {
+    return new Vec3(vec3.x * this.x, vec3.y * this.y, vec3.z * this.z);
   }
 
   offsetRandom(randomSource, f) {
@@ -128,7 +174,7 @@ class Vec3 {
   }
 
   length() {
-    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    return Math.hypot(this.x, this.y, this.z);
   }
 
   lengthSqr() {
@@ -136,7 +182,7 @@ class Vec3 {
   }
 
   horizontalDistance() {
-    return Math.sqrt(this.x * this.x + this.z * this.z);
+    return Math.hypot(this.x, this.z);
   }
 
   horizontalDistanceSqr() {

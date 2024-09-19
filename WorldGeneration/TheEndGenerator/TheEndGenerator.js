@@ -1,7 +1,7 @@
 const Mth = require("../../Utils/MathEx.js")
   , { PerlinNoise, SimplexNoise, NoiseCellInterpolator } = require("../../Utils/Noises.js")
   , { MT } = require("../../Utils/RandomSource.js")
-  , { ChunkBlockPos, BlockPos } = require("../../Utils/Structs.js");
+  , { ChunkBlockPos, BlockPos, Vec3 } = require("../../Utils/Structs.js");
 
 class TheEndGenerator {
   constructor(levelSeedLow) {
@@ -47,87 +47,29 @@ class TheEndGenerator {
         var hV = this.getIslandHeightValue(chunkPos.x, chunkPos.z, xC, zC);
         for (var yC = 0, v23 = 7; yC < 33; yC += 3, v23 -= 3) {
           var ind = yC + 33 * (zC + 3 * xC)
-            , v24 = n1[ind] / 512
-            , v25 = n3[ind] / 20 + 0.5
-            , v26 = n2[ind] / 512;
+            , v1 = new Vec3(n3[ind] / 20 + 0.5, n1[ind] / 512, n2[ind] / 512)
+            , v2 = new Vec3(n3[ind + 1] / 20 + 0.5, n1[ind + 1] / 512, n2[ind + 1] / 512)
+            , v3 = new Vec3(n3[ind + 2] / 20 + 0.5, n1[ind + 2] / 512, n2[ind + 2] / 512)
+            , v4 = (new Vec3(
+              v1.x >= 0 ? v1.x <= 1 ? Mth.lerp(v1.x, v1.y, v1.z) : v1.z : v1.y,
+              v2.x >= 0 ? v2.x <= 1 ? Mth.lerp(v2.x, v2.y, v2.z) : v2.z : v2.y,
+              v3.x >= 0 ? v3.x <= 1 ? Mth.lerp(v3.x, v3.y, v3.z) : v3.z : v3.y,
+            )).add(hV - 8)
+            , v5, v6;
 
-          if (v25 >= 0) {
-            if (v25 <= 1)
-              v26 = Mth.lerp(v25, v24, v26);
-            v24 = v26;
-          }
-
-          var v27 = (v24 - 8.0) + hV, v28, v30, v31, v32;
           if (yC < 14) {
             if (yC <= 8) {
-              v32 = (v23 + 1) * 0.14285715;
-              v30 = 1 - v32;
-              v31 = v32 * 30;
-              v27 = (v30 * v27) - v31;
+              v5 = (new Vec3(v23 + 1, v23, v23 - 1)).scale(0.14285715);
+              v6 = (new Vec3(1)).sub(v5).mul(v4).sub(v5.scale(30));
             }
           } else {
-            v28 = Mth.clamp((yC - 14) * 0.015625, 0, 1);
-            v30 = 1.0 - v28;
-            v31 = v28 * 3000;
-            v27 = (v30 * v27) - v31;
+            v5 = (new Vec3(yC - 14, yC - 13, yC - 12)).scale(0.015625).clamp(0, 1);
+            v6 = (new Vec3(1)).sub(v5).mul(v4).sub(v5.scale(3000));
           }
 
-          result[ind] = v27;
-
-          var v36 = n1[ind + 1] * 0.001953125
-            , v37 = (n3[ind + 1] * 0.050000001) + 0.5
-            , v38 = n2[ind + 1] * 0.001953125;
-
-          if (v37 >= 0.0) {
-            if (v37 <= 1.0)
-              v38 = Mth.lerp(v37, v36, v38);
-            v36 = v38;
-          }
-
-          var v39 = (v36 - 8.0) + hV, v40, v41, v42, v43, v44;
-          if (yC < 14) {
-            v43 = v39;
-            if (yC <= 8) {
-              v44 = v23 * 0.14285715;
-              v41 = 1.0 - v44;
-              v42 = v44 * 30.0;
-              v43 = (v41 * v39) - v42;
-            }
-          } else {
-            v40 = Mth.clamp((yC - 13) * 0.015625, 0, 1);
-            v41 = 1.0 - v40;
-            v42 = v40 * 3000.0;
-            v43 = (v41 * v39) - v42;
-          }
-
-          result[ind + 1] = v43;
-          var v47 = n1[ind + 2] * 0.001953125
-            , v48 = (n3[ind + 2] * 0.050000001) + 0.5
-            , v49 = n2[ind + 2] * 0.001953125;
-
-          if (v48 >= 0.0) {
-            if (v48 <= 1.0)
-              v49 = Mth.lerp(v48, v47, v49);
-            v47 = v49;
-          }
-
-          var v50 = (v47 - 8.0) + hV, v51, v52, v53, v54, v55;
-          if (yC < 14) {
-            v54 = v50;
-            if (yC <= 8) {
-              v55 = (v23 - 1) * 0.14285715;
-              v52 = 1.0 - v55;
-              v53 = v55 * 30.0;
-              v54 = (v52 * v50) - v53;
-            }
-          } else {
-            v51 = Mth.clamp((yC - 12) * 0.015625, 0, 1);
-            v52 = 1.0 - v51;
-            v53 = v51 * 3000.0;
-            v54 = (v52 * v50) - v53;
-          }
-
-          result[ind + 2] = v54;
+          result[ind] = v6.x;
+          result[ind + 1] = v6.y;
+          result[ind + 2] = v6.z;
         }
       }
     }
@@ -177,6 +119,7 @@ class TheEndGenerator {
         }
       }
     }
+    return blockVolume
   }
 
   loadChunk(blockVolume, chunkPos) {
