@@ -2,6 +2,60 @@ const Mth = require("./MathEx.js");
 const { RandomSource } = require("./RandomSource");
 const { Vec2, Vec3 } = require("./Structs.js");
 
+class NoiseCellInterpolator {
+  constructor(cells, maxIndex, d2, d3) {
+    this.cells = Float32Array.from(cells);
+    this.a1 = new Float32Array(15);
+    this.maxIndex = maxIndex;
+    this.d2 = 1 / d2;
+    this.d3 = 1 / d3;
+  }
+
+  selectCellXZ(a2, a3, a4, a5) {
+    var v5 = this.maxIndex;
+    if (a2 >= v5)
+      throw new Error();
+    this.a1[0] = this.cells[a2];
+    if (a4 >= v5
+      || (this.a1[1] = this.cells[a4], a3 >= v5)
+      || (this.a1[2] = this.cells[a3], a5 >= v5)
+      || (this.a1[3] = this.cells[a5], a2 + 1 >= v5)
+      || (this.a1[4] = this.cells[a2 + 1], a4 + 1 >= v5)
+      || (this.a1[5] = this.cells[a4 + 1], a3 + 1 >= v5)
+      || (this.a1[6] = this.cells[a3 + 1], a5 + 1 >= v5)) {
+      throw new Error();
+    }
+    this.a1[7] = this.cells[a5 + 1];
+  }
+
+  updateForZ(a2) {
+    var v2 = this.a1[3]
+      , v3 = this.a1[6]
+      , v4 = a2 * this.d2
+      , v5 = this.a1[7];
+
+    this.a1[8] = ((this.a1[2] - this.a1[0]) * v4) + this.a1[0];
+    this.a1[9] = ((v2 - this.a1[1]) * v4) + this.a1[1];
+    this.a1[10] = ((v3 - this.a1[4]) * v4) + this.a1[4];
+    this.a1[11] = ((v5 - this.a1[5]) * v4) + this.a1[5];
+  }
+
+  updateForX(a2) {
+    var v2 = this.a1[11]
+      , v3 = a2 * this.d2;
+    this.a1[12] = ((this.a1[9] - this.a1[8]) * v3) + this.a1[8];
+    this.a1[13] = ((v2 - this.a1[10]) * v3) + this.a1[10];
+  }
+
+  lerpFor(d) {
+    this.a1[14] = Mth.lerp(d * this.d3, this.a1[12], this.a1[13])
+  }
+
+  getLerpedValue() {
+    return this.a1[14];
+  }
+}
+
 class ImprovedNoise {
   static SHIFT_UP_EPSILON = 1.0E-7;
   static GRADIENT = [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1], [1, 1, 0], [0, -1, 1], [-1, 1, 0], [0, -1, -1]];
@@ -271,3 +325,4 @@ class SimplexNoise {
 exports.ImprovedNoise = ImprovedNoise;
 exports.PerlinNoise = PerlinNoise;
 exports.SimplexNoise = SimplexNoise;
+exports.NoiseCellInterpolator = NoiseCellInterpolator;

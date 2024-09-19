@@ -1,7 +1,7 @@
-const Mth = require("../../Utils/MathEx.js");
-const { PerlinNoise, SimplexNoise } = require("../../Utils/Noises.js")
+const Mth = require("../../Utils/MathEx.js")
+  , { PerlinNoise, SimplexNoise, NoiseCellInterpolator } = require("../../Utils/Noises.js")
   , { MT } = require("../../Utils/RandomSource.js")
-  , { cvthex2ps } = require("../../Utils/Converts.js");
+  , { ChunkBlockPos, BlockPos } = require("../../Utils/Structs.js");
 
 class TheEndGenerator {
   constructor(levelSeedLow) {
@@ -19,8 +19,8 @@ class TheEndGenerator {
     for (var v25 = 25, v11 = x - 12, v24 = x - 12, v28 = xC + 24; v25; v25--, v11++, v24++, v28 -= 2) {
       for (var v18 = 25, v15 = z - 12, v16 = z - 12, v17 = zC + 24; v18; v18--, v15++, v16++, v17 -= 2) {
         if (v24 * v24 + v16 * v16 > 4096) {
-          if (this.sNoise1._getValue(v11, v15) < -0.89999998) {
-            var v20 = 100.0 - (Math.hypot(v17, v28) * ((147 * abs(v15) + 3439 * abs(v11)) % 13 + 9));
+          if (this.sNoise1.getValue(v11, v15) < -0.89999998) {
+            var v20 = 100.0 - (Math.hypot(v17, v28) * ((147 * Math.abs(v15) + 3439 * Math.abs(v11)) % 13 + 9));
             if (v20 <= 80.0) {
               if (v20 <= -100.0)
                 v20 = -100;
@@ -46,10 +46,10 @@ class TheEndGenerator {
       for (var zC = 0; zC < 3; zC++) {
         var hV = this.getIslandHeightValue(chunkPos.x, chunkPos.z, xC, zC);
         for (var yC = 0, v23 = 7; yC < 33; yC += 3, v23 -= 3) {
-          var ind = xC * yC * zC
-            , v24 = n1[ind] * 0.001953125
-            , v25 = n3[ind] * 0.050000001 + 0.5
-            , v26 = n2[ind] * 0.001953125
+          var ind = yC + 33 * (zC + 3 * xC)
+            , v24 = n1[ind] / 512
+            , v25 = n3[ind] / 20 + 0.5
+            , v26 = n2[ind] / 512;
 
           if (v25 >= 0) {
             if (v25 <= 1)
@@ -136,7 +136,47 @@ class TheEndGenerator {
   }
 
   prepareHeights(blockVolume, chunkPos) {
+    var densityCell = this.generateDensityCellsForChunk(chunkPos)
+      , interpolator = new NoiseCellInterpolator(densityCell, 297, 8, 4);
 
+    for (var xCH = 0; xCH < 2; xCH++) {
+      for (var zCH = 0; zCH < 2; zCH++) {
+        for (var yCH = 0, v23 = 33 * (zCH + 3 * xCH); yCH < 32; yCH++, v23++) {
+          interpolator.selectCellXZ(v23, v23 + 33, v23 + 99, v23 + 132);
+          for (var zCL = 0; zCL < 8; zCL++) {
+            var zP = 8 * zCH + zCL;
+            interpolator.updateForZ(zCL);
+            for (var xCL = 0; xCL < 8; xCL++) {
+              var xP = 8 * xCH + xCL;
+              interpolator.updateForX(xCL);
+              for (var yCL = 0; yCL < 4; yCL++) {
+                var pos = new ChunkBlockPos(xP, yCH * 4 + yCL, zP)
+                  //v35 = BedrockBlocks::mAir;
+                  , blockData = "air";
+                interpolator.lerpFor(yCL);
+                if (interpolator.getLerpedValue() > 0.0) {
+                  //v35 = BlockTypeRegistry:: getDefaultBlockState(& VanillaBlockTypeIds:: EndStone, 1);
+                  blockData = "end_stone";
+                  var a5 = 0;
+                  if (a5) {
+                    //v36 = EVP_PKEY_CTX_get_data(v56);
+                    //v37 = Dimension:: getMinHeight(v36);
+                    v37 = 0;
+                    v61 = BlockPos.fromChunkBlockPos(v57, pos, v37);
+                    v38 = pos.x + blockVolume.xL * pos.z;
+                    /*v39 = * (* a5 + v38);
+                    if (v39 < (LOWORD(v61.y) + 1))
+                      v39 = LOWORD(v61.y) + 1;
+                      * (* a5 + v38) = v39;*/
+                  }
+                }
+                blockVolume.data[blockVolume.index(pos)] = blockData;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   loadChunk(blockVolume, chunkPos) {

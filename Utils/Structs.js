@@ -1,7 +1,40 @@
 const Mth = require("./MathEx.js")
 
-class ChunkPos { constructor(x, z) { this.x = x; this.z = z } }
-class BlockPos { constructor(x, y, z) { this.x = x; this.y = y; this.z = z } }
+class ChunkPos {
+  constructor(x, z) {
+    this.x = x;
+    this.z = z
+  }
+}
+
+class ChunkBlockPos {
+  constructor(x, y, z) {
+    this.x = x & 0xF;
+    this.y = y | 0;
+    this.z = z & 0xF;
+  }
+
+  toPos() {
+    return new BlockPos(this.x, this.y, this.z)
+  }
+}
+
+class BlockPos {
+  static fromChunkBlockPos(chunkPos, chunkBlockPos, yBias) {
+    return new BlockPos(
+      chunkBlockPos.x + 16 * chunkPos.x,
+      yBias + chunkBlockPos.y,
+      chunkBlockPos.z + 16 * chunkPos.z
+    )
+  }
+
+  constructor(x, y, z) {
+    this.x = x | 0;
+    this.y = y | 0;
+    this.z = z | 0;
+  }
+}
+
 class Vec3 {
   static ZERO = new Vec3(0.0, 0.0, 0.0);
 
@@ -159,5 +192,6 @@ class AABB {
 
 exports.ChunkPos = ChunkPos;
 exports.BlockPos = BlockPos;
+exports.ChunkBlockPos = ChunkBlockPos;
 exports.Vec3 = Vec3;
 exports.Vec2 = Vec2;
