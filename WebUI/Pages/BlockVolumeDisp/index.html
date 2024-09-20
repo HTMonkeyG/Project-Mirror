@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    #disp {
+      width: 256px;
+      height: 256px;
+    }
+  </style>
+  <title>BlockVolumeDisp</title>
+</head>
+
+<body>
+  <canvas id="disp" style="display: inline;"></canvas>
+  <div>
+    <label for="seed">Seed</label><input type="text" id="seed" name="seed" value="0x5BD942DD" />
+    <br>
+    <label for="y">Y</label><input type="number" id="y" name="y" min="0" max="256" value="16" />
+    <br>
+    <label for="x">Chunk X</label><input type="number" id="x" name="x" value="68" />
+    <label for="z">Chunk Z</label><input type="number" id="z" name="z" value="27" />
+  </div>
+  <div style="display: inline;">
+    <p>Colors</p>
+    <div id="list"></div>
+  </div>
+  <script src="./js/blockVolumeDisp.js"></script>
+</body>

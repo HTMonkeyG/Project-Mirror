@@ -58,6 +58,7 @@ class TheEndGenerator {
             , v5, v6;
 
           if (yC < 14) {
+            v6 = v4;
             if (yC <= 8) {
               v5 = (new Vec3(v23 + 1, v23, v23 - 1)).scale(0.14285715);
               v6 = (new Vec3(1)).sub(v5).mul(v4).sub(v5.scale(30));

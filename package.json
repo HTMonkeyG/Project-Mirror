@@ -1,0 +1,23 @@
+{
+  "name": "project-mirror",
+  "version": "1.0.0",
+  "description": "Reverse engineering project for MCBE 1.20",
+  "main": "",
+  "scripts": {
+    "test": "node ./WebUI/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HTMonkeyG/Project-Mirror.git"
+  },
+  "keywords": [
+    "mcbe",
+    "mcne"
+  ],
+  "author": "HTMonkeyG",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HTMonkeyG/Project-Mirror/issues"
+  },
+  "homepage": "https://github.com/HTMonkeyG/Project-Mirror#readme"
+}
