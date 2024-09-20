@@ -1,11 +1,11 @@
 # Project Mirror | 镜像计划
 
-Language: **简体中文** | English
+Language: **English** | [简体中文](/Docs/README-zh_CN.md)
 
-## 概览 
+## Overview
 
-&emsp;&emsp;镜像计划是一个针对MCBE1.20进行的逆向工程项目，其旨在使用逆向工程等方式，通过模拟MCBE服务端运行，提供方便地查找MCBE的矿物、地物、建筑生成的方式的项目。
+&emsp;&emsp;Project Mirror is a reverse engineering project for MCBE 1.20, which aims to simulate behaviours of MCBE server and provides coordinates of features and structures generated in MCBE world.
 
-## 内容
+## Features
 
-**正在开发中**
+**Under development**
