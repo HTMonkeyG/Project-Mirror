@@ -5,7 +5,7 @@ const TheEndGenerator = require("./TheEndGenerator.js")
 
 exports.trigger = {
   url: {
-    "/BlockVolume": {
+    "/block-volume": {
       main(params) {
         var a = new TheEndGenerator(Number(params.seed) | 0);
         return JSON.stringify(a.prepareHeights(

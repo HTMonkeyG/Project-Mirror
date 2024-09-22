@@ -2,6 +2,7 @@ const http = require('http')
   , fs = require('fs')
   , pl = require('path')
   , url = require("url")
+const OCTET_STREAM = { 'Content-Type': 'application/octet-stream' };
 var plugins = [];
 
 function loadPlugin(path) {
@@ -74,38 +75,42 @@ const server = http.createServer((req, res) => {
           });
         } else {
           // Server internal error
-          res.writeHead(500);
           console.error(error);
-          res.end('Server Error');
+          res.writeHead(500).end(error.message, 'uft-8');
         }
-      } else {
+      } else
         // Send file with specify MIME type
-        res.writeHead(200, { 'Content-Type': contentType });
-        res.end(content, 'utf-8');
-      }
+        res.writeHead(200, { 'Content-Type': contentType }).end(content, 'utf-8');
     });
   } else if (req.method == "POST") {
+    // Load plugin instruction
     if (reqUrl.pathname == "/load-plugin") {
       try {
         loadPlugin(parseQuery(reqUrl.query)["plugin-path"]);
-        res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
-        res.end(parseQuery(reqUrl.query)["plugin-path"], 'utf-8');
+        res.writeHead(200).end();
       } catch (e) {
-        res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
-        res.end("", 'utf-8');
+        res.writeHead(404).end(e.message, 'utf-8');
       }
-    } else
-      for (var p of plugins) {
+    } else {
+      // Plugin request
+      for (var p of plugins)
         if (p.url[reqUrl.pathname]) {
-          res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
-          res.end(p.url[reqUrl.pathname].main(parseQuery(reqUrl.query)), 'utf-8');
-          break;
+          var result;
+          try {
+            result = p.url[reqUrl.pathname].main(reqUrl.query ? parseQuery(reqUrl.query) : null);
+            res.writeHead(200).end(result, 'utf-8');
+          } catch (e) {
+            res.writeHead(500).end(e.message, 'utf-8');
+          }
+          return
         }
-      }
+      res.writeHead(404).end();
+    }
+    
   }
 });
 
 const PORT = 9000;
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`WebUI server is running on port ${PORT}.`);
 });

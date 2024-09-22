@@ -1,30 +1,36 @@
-<div id="list">
+<head>
+  <!DOCTYPE html>
+  <meta charset="utf-8">
+  <title>Project Mirror Debug WebUI</title>
+</head>
 
-</div>
-<br>
-<button onclick="update()">Refresh</button>
-<script>
-  function update() {
-    var xhr = new XMLHttpRequest(), blockVolume = null, r = [];
-    xhr.open("POST", "/file-list", true);
+<body>
+  <h1>Project Mirror Debug WebUI</h1>
+  <div id="list"></div>
+  <br>
+  <button onclick="update()">Refresh</button>
+  <script>
+    function update() {
+      var xhr = new XMLHttpRequest(), blockVolume = null, r = [];
+      xhr.open("POST", "/file-list", true);
 
-    xhr.onload = function (e) {
-      console.log(e)
-      var ls = JSON.parse(e.target.response);
-      var d = document.getElementById("list");
-      while (d.firstChild) {
-        d.removeChild(d.firstChild);
-      }
-      for (var e of ls) {
-        var f = document.createElement("a");
-        f.href = e + "/index.html";
-        f.innerText = e;
-        var br = document.createElement("br");
-        d.appendChild(f).appendChild(br);
-      }
-    };
+      xhr.onload = function (e) {
+        console.log(e)
+        var ls = JSON.parse(e.target.response);
+        var d = document.getElementById("list");
+        while (d.firstChild)
+          d.removeChild(d.firstChild);
+        for (var e of ls) {
+          var f = document.createElement("a");
+          f.href = e + "/index.html";
+          f.innerText = e;
+          var br = document.createElement("br");
+          d.appendChild(f).appendChild(br);
+        }
+      };
 
-    xhr.send();
-  }
-  update();
-</script>
+      xhr.send();
+    }
+    update();
+  </script>
+</body>

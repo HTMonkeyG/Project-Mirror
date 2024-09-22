@@ -8,13 +8,11 @@ var Mth = {
     return Math.min(Math.max(n, n2), n3);
   },
   clampedLerp(d, d2, d3) {
-    if (d3 < 0.0) {
-      return d;
-    }
-    if (d3 > 1.0) {
+    if (d < 0.0)
       return d2;
-    }
-    return Mth.lerp(d3, d, d2);
+    if (d > 1.0)
+      return d3;
+    return Mth.lerp(d, d2, d3);
   },
   absMax(d, d2) {
     if (d < 0.0) {

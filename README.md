@@ -1,3 +1,5 @@
+![Logo](/Docs/img/Project-Mirror-banner.png)
+
 # Project Mirror | 镜像计划
 
 Language: **English** | [简体中文](/Docs/README-zh_CN.md)

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<div></div>
+<meta charset="utf-8">
+
+<canvas id="a" width="1024" height="1024"></canvas>
+
+<script>
+  var C = document.getElementById("a")
+    , CTX = C.getContext("2d");
+
+  //CTX.fillStyle = "#000";
+  //CTX.fillRect(0, 0, C.width, C.height);
+  CTX.fillStyle = "rgb(255,233,186)";
+
+  CTX.fillRect(512 - 18, 45, 36, 1024 - 90);
+
+  CTX.lineWidth = 30;
+  CTX.strokeStyle = "rgb(255,233,186)";
+  CTX.moveTo(100, 200);
+  CTX.lineTo(100, 1024 - 200);
+  CTX.lineTo(512 - 200, 1024 - 300);
+  CTX.lineTo(512 - 200, 300);
+  CTX.lineTo(100, 200);
+  CTX.lineTo(100, 1024 - 200);
+  CTX.stroke();
+  CTX.fill();
+
+  CTX.beginPath()
+  CTX.moveTo(1024 - 100, 200);
+  CTX.lineTo(1024 - 100, 1024 - 200);
+  CTX.lineTo(512 + 200, 1024 - 300);
+  CTX.lineTo(512 + 200, 300);
+  CTX.lineTo(1024 - 100, 200);
+  CTX.lineTo(1024 - 100, 1024 - 200);
+  CTX.stroke();
+</script>

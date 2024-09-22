@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<div></div>
+<meta charset="utf-8">
+
+<canvas id="a" width="1024" height="1024"></canvas>
+
+<script>
+  class MT {
+    constructor(a) {
+      null == a && (a = (new Date).getTime()),
+        this.N = 624,
+        this.M = 397,
+        this.MATRIX_A = 2567483615,
+        this.UPPER_MASK = 2147483648,
+        this.LOWER_MASK = 2147483647,
+        this.mt = new Array(this.N),
+        this.mti = this.N + 1,
+        a.constructor == Array ? (this.init_by_array(a, a.length), this.seed = null) : (this.init_seed(a), this.seed = a)
+    }
+
+    init_seed(a) {
+      this.seed = a;
+      for (this.mt[0] = a >>> 0,
+        this.mti = 1; this.mti < this.N; this.mti++)
+        a = this.mt[this.mti - 1] ^ this.mt[this.mti - 1] >>> 30,
+          this.mt[this.mti] = (1812433253 * ((4294901760 & a) >>> 16) << 16) + 1812433253 * (65535 & a) + this.mti,
+          this.mt[this.mti] >>>= 0
+    }
+
+    init_by_array(a, b) {
+      this.seed = null;
+      var c, d, e;
+      for (this.init_seed(19650218),
+        c = 1,
+        d = 0,
+        e = this.N > b ? this.N : b; e; e--) {
+        var f = this.mt[c - 1] ^ this.mt[c - 1] >>> 30;
+        this.mt[c] = (this.mt[c] ^ (1664525 * ((4294901760 & f) >>> 16) << 16) + 1664525 * (65535 & f)) + a[d] + d,
+          this.mt[c] >>>= 0,
+          d++,
+          ++c >= this.N && (this.mt[0] = this.mt[this.N - 1],
+            c = 1),
+          d >= b && (d = 0)
+      }
+      for (e = this.N - 1; e; e--)
+        f = this.mt[c - 1] ^ this.mt[c - 1] >>> 30,
+          this.mt[c] = (this.mt[c] ^ (1566083941 * ((4294901760 & f) >>> 16) << 16) + 1566083941 * (65535 & f)) - c,
+          this.mt[c] >>>= 0,
+          ++c >= this.N && (this.mt[0] = this.mt[this.N - 1],
+            c = 1);
+      this.mt[0] = 2147483648
+    }
+
+    random_int() {
+      var a, b = new Array(0, this.MATRIX_A);
+      if (this.mti >= this.N) {
+        var c;
+        for (this.mti == this.N + 1 && this.init_seed(5489),
+          c = 0; c < this.N - this.M; c++)
+          a = this.mt[c] & this.UPPER_MASK | this.mt[c + 1] & this.LOWER_MASK,
+            this.mt[c] = this.mt[c + this.M] ^ a >>> 1 ^ b[1 & a];
+        for (; c < this.N - 1; c++)
+          a = this.mt[c] & this.UPPER_MASK | this.mt[c + 1] & this.LOWER_MASK,
+            this.mt[c] = this.mt[c + (this.M - this.N)] ^ a >>> 1 ^ b[1 & a];
+        a = this.mt[this.N - 1] & this.UPPER_MASK | this.mt[0] & this.LOWER_MASK,
+          this.mt[this.N - 1] = this.mt[this.M - 1] ^ a >>> 1 ^ b[1 & a],
+          this.mti = 0
+      }
+      return a = this.mt[this.mti++],
+        a ^= a >>> 11,
+        a ^= a << 7 & 2636928640,
+        a ^= a << 15 & 4022730752,
+        (a ^= a >>> 18) >>> 0
+    }
+
+    random_int31() {
+      return this.random_int() >>> 1
+    }
+
+    random_incl() {
+      return this.random_int() * (1 / 4294967295)
+    }
+
+    random() {
+      return this.random_int() * (1 / 4294967296)
+    }
+
+    random_excl() {
+      return (this.random_int() + .5) * (1 / 4294967296)
+    }
+
+    random_long() {
+      return (67108864 * (this.random_int() >>> 5) + (this.random_int() >>> 6)) * (1 / 9007199254740992)
+    }
+
+    setSeed(a) {
+      this.init_seed("number" == typeof a ? a : a.toInt())
+    }
+
+    nextInt(a) {
+      var b;
+      return null == a ? this.random_int() >>> 1 : (b = this.random_int(),
+        Number((BigInt(b) & 4294967295n).toString()) % a);
+    }
+
+    nextIntRaw() {
+      return this.random_int()
+    }
+
+    nextIntRange(a, b) {
+      return b > a ? a + this.nextInt(b - a) : a
+    }
+
+    nextFloat() {
+      return Math.fround(this.random())
+    }
+
+    nextDouble() {
+      return this.random()
+    }
+
+    nextBoolean() {
+      return 0 != (134217728 & this.random_int())
+    }
+  }
+
+  var ImprovedNoise = {
+    GRADIENT: [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1], [1, 1, 0], [0, -1, 1], [-1, 1, 0], [0, -1, -1]],
+    gradDot(n, d, d2, d3) { return ImprovedNoise.GRADIENT[n & 0xF][0] * d + ImprovedNoise.GRADIENT[n & 0xF][1] * d2 + ImprovedNoise.GRADIENT[n & 0xF][2] * d3 }
+  };
+
+  class SimplexNoise {
+    static SQRT_3 = Math.sqrt(3.0);
+    static F2 = 0.5 * (SimplexNoise.SQRT_3 - 1.0);
+    static G2 = (3.0 - SimplexNoise.SQRT_3) / 6.0;
+
+    constructor(randomSource) {
+      this.p = [];
+      this.xo = randomSource.nextDouble() * 256.0;
+      this.yo = randomSource.nextDouble() * 256.0;
+      this.zo = randomSource.nextDouble() * 256.0;
+      for (var n = 0; n < 256; ++n)
+        this.p[n] = n;
+      for (var n = 0; n < 256; ++n) {
+        var n2 = randomSource.nextInt(256 - n)
+          , n3 = this.p[n];
+        this.p[n] = this.p[n2 + n];
+        this.p[n2 + n] = n3;
+      }
+    }
+
+    pf(n) { return this.p[n & 0xFF] }
+
+    getCornerNoise3D(n, d, d2, d3, d4) {
+      var d5
+        , d6 = d4 - d * d - d2 * d2 - d3 * d3;
+      if (d6 < 0.0) {
+        d5 = 0.0;
+      } else {
+        d6 *= d6;
+        d5 = d6 * d6 * ImprovedNoise.gradDot(n, d, d2, d3);
+      }
+      return d5;
+    }
+
+    getValue(d, d2) {
+      var d3, n, n2, d4, d5, n3
+        , d6 = (d + d2) * SimplexNoise.F2
+        , n4 = Math.floor(d + d6)
+        , d7 = n4 - (d4 = (n4 + (n2 = Math.floor(d2 + d6))) * SimplexNoise.G2)
+        , d8 = d - d7;
+      if (d8 > (d5 = d2 - (d3 = n2 - d4))) {
+        n3 = 1;
+        n = 0;
+      } else {
+        n3 = 0;
+        n = 1;
+      }
+      var d9 = d8 - n3 + SimplexNoise.G2
+        , d10 = d5 - n + SimplexNoise.G2
+        , d11 = d8 - 1.0 + 2.0 * SimplexNoise.G2
+        , d12 = d5 - 1.0 + 2.0 * SimplexNoise.G2
+        , n5 = n4 & 0xFF
+        , n6 = n2 & 0xFF
+        , n7 = this.pf(n5 + this.pf(n6)) % 12
+        , n8 = this.pf(n5 + n3 + this.pf(n6 + n)) % 12
+        , n9 = this.pf(n5 + 1 + this.pf(n6 + 1)) % 12
+        , d13 = this.getCornerNoise3D(n7, d8, d5, 0.0, 0.5)
+        , d14 = this.getCornerNoise3D(n8, d9, d10, 0.0, 0.5)
+        , d15 = this.getCornerNoise3D(n9, d11, d12, 0.0, 0.5);
+      return 70.0 * (d13 + d14 + d15);
+    }
+  }
+
+  var sNoise1 = new SimplexNoise(new MT(0x5BD942DD));
+
+  function clamp(n, n2, n3) {
+    return Math.min(Math.max(n, n2), n3);
+  }
+
+  function getIslandHeightValue(x, z, xC, zC) {
+    // Central island generation
+    var v9 = 100.0 - Math.sqrt((zC + 2 * z) ** 2 + (xC + 2 * x) ** 2) * 8.0;
+    v9 = clamp(v9, -100, 80);
+
+    for (var v25 = 25, v11 = x - 12, v28 = xC + 24; v25; v25--, v11++, v28 -= 2) {
+      for (var v18 = 25, v16 = z - 12, v17 = zC + 24; v18; v18--, v16++, v17 -= 2) {
+        // Outer islands generation
+        if (v11 * v11 + v16 * v16 > 4096) {
+          if (sNoise1.getValue(v11, v16) < -0.89999998) {
+            var v20 = 100.0 - (Math.hypot(v17, v28) * ((147 * Math.abs(v16) + 3439 * Math.abs(v11)) % 13 + 9));
+            v20 = clamp(v20, -100, 80);
+            v9 = Math.max(v20, v9);
+          }
+        }
+      }
+    }
+
+    return v9
+  }
+
+  function v(x, z, xC, zC) {
+    for (var v25 = 25, v11 = x - 12, v28 = xC + 24; v25; v25--, v11++, v28 -= 2) {
+      for (var v18 = 25, v16 = z - 12, v17 = zC + 24; v18; v18--, v16++, v17 -= 2) {
+        // Outer islands generation
+        var v20 = 100.0 - (Math.hypot(v17, v28) * ((147 * Math.abs(v16) + 3439 * Math.abs(v11)) % 13 + 9));
+        v20 = clamp(v20, -100, 80);
+        v9 = Math.max(v20, v9);
+      }
+    }
+
+    return v9
+  }
+
+  var C = document.getElementById("a")
+    , CTX = C.getContext("2d");
+
+  for (var xC = -512; xC < 512; xC++)
+    for (var zC = -512; zC < 512; zC++) {
+      var r = getIslandHeightValue(xC >> 1, zC >> 1, xC & 1, zC & 1);
+      CTX.fillStyle = `rgb(${r + 100},${r + 100},${r + 100})`;
+    }
+</script>

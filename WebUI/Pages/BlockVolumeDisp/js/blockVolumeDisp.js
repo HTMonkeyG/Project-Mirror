@@ -84,11 +84,11 @@ function updateList() {
 }
 
 var xhr = new XMLHttpRequest(), blockVolume = null, r = [];
-xhr.open("POST", "/load-plugin?plugin-path=../WorldGeneration/TheEndGenerator/test.js");
+xhr.open("POST", "/load-plugin?plugin-path=../WorldGeneration/TheEndGenerator/plugin.js");
 
 xhr.onload = function (e) {
   console.log(e);
-  if (e.target.response != "../WorldGeneration/TheEndGenerator/test.js") return;
+  if (e.target.status != 200) return;
 
   function handler() {
     var params = {
@@ -97,7 +97,7 @@ xhr.onload = function (e) {
       seed: document.getElementById("seed").value
     };
 
-    xhr.open("POST", `/BlockVolume?x=${params.x}&z=${params.z}&seed=${params.seed}`, true);
+    xhr.open("POST", `/block-volume?x=${params.x}&z=${params.z}&seed=${params.seed}`, true);
     xhr.send();
   }
 
@@ -105,7 +105,7 @@ xhr.onload = function (e) {
   document.getElementById("z").addEventListener("change", handler);
   document.getElementById("seed").addEventListener("change", handler);
 
-  xhr.open("POST", "/BlockVolume?x=0x44&z=0x1b&seed=0x5BD942DD", true);
+  xhr.open("POST", "/block-volume?x=0x44&z=0x1b&seed=0x5BD942DD", true);
   xhr.onload = function (e) {
     console.log(e)
     blockVolume = JSON.parse(e.target.response);

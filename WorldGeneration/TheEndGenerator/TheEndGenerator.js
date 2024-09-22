@@ -13,19 +13,17 @@ class TheEndGenerator {
   }
 
   getIslandHeightValue(x, z, xC, zC) {
+    // Central island generation
     var v9 = 100.0 - Math.sqrt((zC + 2 * z) ** 2 + (xC + 2 * x) ** 2) * 8.0;
-    v9 = v9 <= 80 ? v9 < -100 ? -100 : v9 : 80;
+    v9 = Mth.clamp(v9, -100, 80);
 
-    for (var v25 = 25, v11 = x - 12, v24 = x - 12, v28 = xC + 24; v25; v25--, v11++, v24++, v28 -= 2) {
-      for (var v18 = 25, v15 = z - 12, v16 = z - 12, v17 = zC + 24; v18; v18--, v15++, v16++, v17 -= 2) {
-        if (v24 * v24 + v16 * v16 > 4096) {
-          if (this.sNoise1.getValue(v11, v15) < -0.89999998) {
-            var v20 = 100.0 - (Math.hypot(v17, v28) * ((147 * Math.abs(v15) + 3439 * Math.abs(v11)) % 13 + 9));
-            if (v20 <= 80.0) {
-              if (v20 <= -100.0)
-                v20 = -100;
-            } else
-              v20 = 80;
+    for (var v25 = 25, v11 = x - 12, v28 = xC + 24; v25; v25--, v11++, v28 -= 2) {
+      for (var v18 = 25, v16 = z - 12, v17 = zC + 24; v18; v18--, v16++, v17 -= 2) {
+        // Outer islands generation
+        if (v11 * v11 + v16 * v16 > 4096) {
+          if (this.sNoise1.getValue(v11, v16) < -0.89999998) {
+            var v20 = 100.0 - (Math.hypot(v17, v28) * ((147 * Math.abs(v16) + 3439 * Math.abs(v11)) % 13 + 9));
+            v20 = Mth.clamp(v20, -100, 80);
             v9 = Math.max(v20, v9);
           }
         }
@@ -37,10 +35,10 @@ class TheEndGenerator {
 
   generateDensityCellsForChunk(chunkPos) {
     var result = new Float32Array(3 * 33 * 3)
-      , a3a = { x: chunkPos.x * 2, y: 0, z: chunkPos.z * 2 }
-      , n1 = this.pNoise1.getRegion3D(a3a, 3, 33, 3, { x: 1368.824, y: 684.41199, z: 1368.824 })
-      , n2 = this.pNoise2.getRegion3D(a3a, 3, 33, 3, { x: 1368.824, y: 684.41199, z: 1368.824 })
-      , n3 = this.pNoise3.getRegion3D(a3a, 3, 33, 3, { x: 17.1103, y: 4.277575, z: 17.1103 });
+      , origin = { x: chunkPos.x * 2, y: 0, z: chunkPos.z * 2 }
+      , n1 = this.pNoise1.getRegion3D(origin, 3, 33, 3, { x: 1368.824, y: 684.41199, z: 1368.824 })
+      , n2 = this.pNoise2.getRegion3D(origin, 3, 33, 3, { x: 1368.824, y: 684.41199, z: 1368.824 })
+      , n3 = this.pNoise3.getRegion3D(origin, 3, 33, 3, { x: 17.1103, y: 4.277575, z: 17.1103 });
 
     for (var xC = 0; xC < 3; xC++) {
       for (var zC = 0; zC < 3; zC++) {
@@ -51,19 +49,22 @@ class TheEndGenerator {
             , v2 = new Vec3(n3[ind + 1] / 20 + 0.5, n1[ind + 1] / 512, n2[ind + 1] / 512)
             , v3 = new Vec3(n3[ind + 2] / 20 + 0.5, n1[ind + 2] / 512, n2[ind + 2] / 512)
             , v4 = (new Vec3(
-              v1.x >= 0 ? v1.x <= 1 ? Mth.lerp(v1.x, v1.y, v1.z) : v1.z : v1.y,
-              v2.x >= 0 ? v2.x <= 1 ? Mth.lerp(v2.x, v2.y, v2.z) : v2.z : v2.y,
-              v3.x >= 0 ? v3.x <= 1 ? Mth.lerp(v3.x, v3.y, v3.z) : v3.z : v3.y,
+              Mth.clampedLerp(v1.x, v1.y, v1.z),
+              Mth.clampedLerp(v2.x, v2.y, v2.z),
+              Mth.clampedLerp(v3.x, v3.y, v3.z)
             )).add(hV - 8)
             , v5, v6;
 
           if (yC < 14) {
+            // Middle of the island
             v6 = v4;
-            if (yC <= 8) {
+            if (yC < 9) {
+              // Bottom of the island
               v5 = (new Vec3(v23 + 1, v23, v23 - 1)).scale(0.14285715);
               v6 = (new Vec3(1)).sub(v5).mul(v4).sub(v5.scale(30));
             }
           } else {
+            // Top of the island
             v5 = (new Vec3(yC - 14, yC - 13, yC - 12)).scale(0.015625).clamp(0, 1);
             v6 = (new Vec3(1)).sub(v5).mul(v4).sub(v5.scale(3000));
           }
