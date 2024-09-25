@@ -5,6 +5,14 @@ class ChunkPos {
     this.x = x;
     this.z = z
   }
+
+  fromBlockPos() {
+
+  }
+
+  toString() {
+    return `[ChunkPos ${this.x}, ${this.z}]`
+  }
 }
 
 class ChunkBlockPos {

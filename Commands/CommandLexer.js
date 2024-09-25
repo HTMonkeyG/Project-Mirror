@@ -1,0 +1,3 @@
+class CommandLexer {
+  constructor() { }
+}

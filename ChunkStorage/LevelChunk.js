@@ -1,0 +1,3 @@
+class LevelChunk {
+  constructor() { }
+}

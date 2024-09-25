@@ -7,7 +7,7 @@ exports.trigger = {
   url: {
     "/block-volume": {
       main(params) {
-        var a = new TheEndGenerator(Number(params.seed) | 0);
+        var a = new TheEndGenerator(void 0, Number(params.seed) | 0, void 0);
         return JSON.stringify(a.prepareHeights(
           new BlockVolume(16, 256, 16, 'air'),
           { x: Number(params.x), z: Number(params.z) }

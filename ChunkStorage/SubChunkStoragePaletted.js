@@ -1,12 +1,12 @@
-class SubChunkStorage {
-  constructor() {
+class SubChunkStoragePaletted {
+  constructor(placeholder) {
     // In vanilla code, here only can be 0, 1, 2, 3, 4, 5, 6, 8, 16
     // 0 for subchunks only have single type of block
     this.bitsPerElement = 0;
-    this.data = new Uint16Array(Math.ceil(4096 * bitsPerElement / 16));
-    this.paletteMaxLength = 2 ** bitsPerElement;
+    this.data = new Uint16Array(Math.ceil(4096 * this.bitsPerElement / 16));
+    this.paletteMaxLength = 2 ** this.bitsPerElement;
     // Array of Block object
-    this.palette = [];
+    this.palette = [placeholder];
   }
 
   setBlock(block, posInChunk) {
@@ -24,31 +24,22 @@ class SubChunkStorage {
       i++;
     }
 
-    if (this.data.length >= this.paletteMaxLength)
+    if (this.palette.length >= this.paletteMaxLength)
       this.makeExpand();
 
-    this.data.push(block);
+    this.palette.push(block);
     this.data[wordIndex] = (this.data[wordIndex] & (0xFFFF >> inWord)) | (i >> inWord);
     inNextWord < 16 && (this.data[wordIndex + 1] = (this.data[wordIndex + 1] & (0xFFFF << inNextWord)) | ((i << inNextWord) & 0xFFFF));
   }
-}
 
-class SubChunkStoragePaletted {
-  constructor(bitsPerElement) {
-    if (typeof bitsPerElement != 'number')
-      throw new TypeError();
-    // In vanilla code, here only can be 0, 1, 2, 3, 4, 5, 6, 8, 16
-    // 0 for subchunks only have single type of block
-    bitsPerElement = bitsPerElement | 0xF;
-    this.data = new Uint8Array(Math.ceil(4096 * bitsPerElement / 8));
-    this.paletteMaxLength = 2 ** bitsPerElement;
-    // Array of Block object
-    this.palette = [];
+  makeExpand() {
+    var dataPrev = this.data;
+    if (this.bitsPerElement < 8 && this.bitsPerElement >= 0)
+      this.bitsPerElement += 1;
+    else if (this.bitsPerElement == 8)
+      this.bitsPerElement = 16;
+    else throw new Error()
   }
-
-  setElement() { }
-
-  replaceBlocks() { }
 }
 
 module.exports = SubChunkStoragePaletted;

@@ -1,10 +1,21 @@
 const Mth = require("../../Utils/MathEx.js")
   , { PerlinNoise, SimplexNoise, NoiseCellInterpolator } = require("../../Utils/Noises.js")
   , { MT } = require("../../Utils/RandomSource.js")
-  , { ChunkBlockPos, BlockPos, Vec3 } = require("../../Utils/Structs.js");
+  , { ChunkBlockPos, BlockPos, Vec3, ChunkPos } = require("../../Utils/Structs.js")
+  , WorldGenerator = require("./WorldGenerator.js")
+  , BlockVolume = require("../../ChunkStorage/BlockVolume.js");
 
-class TheEndGenerator {
-  constructor(levelSeedLow) {
+class TheEndGenerator extends WorldGenerator {
+  /**
+   * @param {ChunkPos} chunkPos 
+   * @returns 
+   */
+  static isOutsideCentralIslandArea(chunkPos) {
+    return chunkPos.x ** 2 + chunkPos.z ** 2 < 4096
+  }
+
+  constructor(dimension, levelSeedLow, biome) {
+    super(dimension, levelSeedLow, biome);
     var randomSource = new MT(levelSeedLow);
     this.pNoise1 = new PerlinNoise(randomSource, 16, { a1: true, a2: true, b: true, c: 0 });
     this.pNoise2 = new PerlinNoise(randomSource, 16, { a1: true, a2: true, b: true, c: 0 });
@@ -12,6 +23,14 @@ class TheEndGenerator {
     this.sNoise1 = new SimplexNoise(randomSource);
   }
 
+  /**
+   * Get preliminary height value.
+   * @param {Number} x 
+   * @param {Number} z 
+   * @param {Number} xC 
+   * @param {Number} zC 
+   * @returns {Number}
+   */
   getIslandHeightValue(x, z, xC, zC) {
     // Central island generation
     var v9 = 100.0 - Math.sqrt((zC + 2 * z) ** 2 + (xC + 2 * x) ** 2) * 8.0;
@@ -31,6 +50,16 @@ class TheEndGenerator {
     }
 
     return v9
+  }
+
+  /**
+   * Get preliminary height value in integer.
+   * @param {Number} x - Block pos X
+   * @param {Number} z - Block pos Z
+   * @returns {Number}
+   */
+  getPreliminarySurfaceLevel(x, z) {
+    return Math.floor(this.getIslandHeightValue(x >> 4, z >> 4, 1, 1))
   }
 
   generateDensityCellsForChunk(chunkPos) {
@@ -124,8 +153,17 @@ class TheEndGenerator {
     return blockVolume
   }
 
-  loadChunk(blockVolume, chunkPos) {
+  loadChunk(chunkPos) {
+    var result = new BlockVolume(16, 256, 16, 'air');
+    this.prepareHeights(result, chunkPos);
+    return result
+  }
 
+  postProcess(chunkPos, chunk) {
+    var random = new MT(this.seed)
+      , a = (random.nextInt() & 0xFFFFFFFE) + 1
+      , b = (random.nextInt() & 0xFFFFFFFE) + 1;
+    this.postProcessStructureFeatures(new MT(this.seed ^ (a * chunkPos.x + b * chunkPos.z)), chunkPos);
   }
 }
 
