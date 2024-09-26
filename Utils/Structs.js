@@ -36,15 +36,55 @@ class BlockPos {
     )
   }
 
+  static copy(blockPos) {
+    return new BlockPos(blockPos.x, blockPos.y, blockPos.z)
+  }
+
   constructor(x, y, z) {
     this.x = x | 0;
     this.y = y | 0;
     this.z = z | 0;
   }
+
+  relative(direction, offset) {
+    var result = BlockPos.copy(this);
+    switch (direction) {
+      case 0:
+        result.y -= offset;
+        break;
+      case 1:
+        result.y += offset;
+        break;
+      case 2:
+        result.z -= offset;
+        break;
+      case 3:
+        result.z += offset;
+        break;
+      case 4:
+        result.x -= offset;
+        break;
+      case 5:
+        result.x += offset;
+        break;
+    }
+    return result;
+  }
 }
 
 class Vec3 {
   static ZERO = new Vec3(0.0, 0.0, 0.0);
+
+  /**
+   * Copy a new Vec3 object.
+   * 
+   * Also can be used for construct Vec3 from vec3-like objects.
+   * @param {*} vec3 
+   * @returns 
+   */
+  static copy(vec3) {
+    return new Vec3(vec3.x, vec3.y, vec3.z)
+  }
 
   static fromRGB24(n) {
     var d = (double)(n >> 16 & 0xFF) / 255.0
@@ -241,7 +281,34 @@ class Vec2 {
 }
 
 class AABB {
+  static copy(aabb) {
+    return new AABB(
+      aabb.x1.x,
+      aabb.x1.y,
+      aabb.x1.z,
+      aabb.x2.x,
+      aabb.x2.y,
+      aabb.x2.z
+    )
+  }
 
+  constructor(x1, y1, z1, x2, y2, z2) {
+    this.p1 = new Vec3(
+      Math.min(x1, x2),
+      Math.min(y1, y2),
+      Math.min(z1, z2)
+    );
+    this.p2 = new Vec3(
+      Math.max(x1, x2),
+      Math.max(y1, y2),
+      Math.max(z1, z2)
+    );
+  }
+
+  move(vec3) {
+    this.p1 = this.p1.add(vec3);
+    this.p2 = this.p2.add(vec3)
+  }
 }
 
 exports.ChunkPos = ChunkPos;
@@ -249,3 +316,4 @@ exports.BlockPos = BlockPos;
 exports.ChunkBlockPos = ChunkBlockPos;
 exports.Vec3 = Vec3;
 exports.Vec2 = Vec2;
+exports.AABB = AABB;

@@ -24,6 +24,8 @@ class Dimension {
   getGenerator() {
     return this.generator
   }
+
+  createGenerator() { }
 }
 
 class TheEndDimension extends Dimension {

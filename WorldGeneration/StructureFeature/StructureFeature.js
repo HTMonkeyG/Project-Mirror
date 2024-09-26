@@ -58,16 +58,20 @@ class StructureFeature {
 
   }
 
-  createStructureStart() { }
+  createStructureStart(dimension, random, chunkPos, generator) { }
 
-  createBlueprints(dimension, chunkPos) {
+  createBlueprints(dimension, chunkPos, generator) {
     var s = dimension.seed.low ^ (this.modifier[0] * chunkPos.x + this.modifier[1] * chunkPos.z);
 
-    this.addFeature(dimension, new MT(s), chunkPos);
+    this.addFeature(dimension, new MT(s), chunkPos, generator);
   }
 
-  addFeature(dimension, random, chunkPos) {
-    if (this.isFeatureChunk(random, chunkPos, levelSeedLow, dimension, generator));
+  addFeature(dimension, random, chunkPos, generator) {
+    random.nextInt();
+    var levelSeedLow = dimension.seed.low;
+    if (this.isFeatureChunk(random, chunkPos, levelSeedLow, dimension, generator)) {
+      this.createStructureStart(dimension, random, chunkPos, generator)
+    }
   }
 
   isFeatureChunk(random, chunkPos, levelSeedLow, dimension, generator) { }

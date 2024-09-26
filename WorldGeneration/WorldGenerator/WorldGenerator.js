@@ -29,7 +29,7 @@ class WorldGenerator {
 
   prepareStructureFeatureBlueprints() {
     for (var a of this.structureFeatures)
-      a.createBlueprints(random, chunkPos);
+      a.createBlueprints(random, chunkPos, this);
   }
 }
 
