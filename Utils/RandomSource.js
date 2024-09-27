@@ -67,7 +67,7 @@ class MT extends RandomSource {
       this.MATRIX_A = 2567483615,
       this.UPPER_MASK = 2147483648,
       this.LOWER_MASK = 2147483647,
-      this.mt = new Array(this.N),
+      this.mt = new Int32Array(this.N),
       this.mti = this.N + 1,
       a.constructor == Array ? (this.init_by_array(a, a.length), this.seed = null) : (this.init_seed(a), this.seed = a)
   }
