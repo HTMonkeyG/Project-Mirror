@@ -1,7 +1,7 @@
 const fs = require("fs")
   , pl = require("path")
   , { MT } = require("../../Utils/RandomSource.js")
-  , SimplifiedMT = require("./SimplifiedMT.js")
+  , { SimplifiedMT, SimplifiedMT_ } = require("./SimplifiedMT.js")
 
 var a = new WebAssembly.Instance(
   new WebAssembly.Module(
@@ -10,24 +10,44 @@ var a = new WebAssembly.Instance(
   ), {}
 ).exports;
 
-a.MT(0);
+a.setSeed(0);
 
-var c = new MT(0)
-var m = 2 ^ 32;
+var b = new SimplifiedMT(0), c = new MT(0), d = new SimplifiedMT_(0)
 
-for (var b = 0; b < 2 ^ 20; b++) {
-  a.set_seed(0);
-  a.random_int();
-  a.random_int();
-  a.random_int();
+var t0 = new Date();
+for (var i = 0; i < 1000000; i++) {
+  a.setSeed(i); //a.nextInt()
 }
+
 console.log((new Date()) - t0)
 
 var t0 = new Date();
-var i = 0;
-for (var b = 0; b < m; b++) {
-  c.setSeed(0);
-  i = c.nextInt();
-  i = c.nextInt(2);
+for (var i = 0; i < 1000000; i++) {
+  b.setSeed(i); //b.nextInt()
 }
-console.log(i, (new Date()) - t0)
+
+console.log((new Date()) - t0)
+
+t0 = new Date();
+for (var i = 0; i < 1000000; i++) {
+  c.setSeed(i); //c.nextInt()
+}
+console.log((new Date()) - t0)
+
+t0 = new Date();
+for (var i = 0; i < 1000000; i++) {
+  d.setSeed(i); //d.nextInt()
+}
+console.log((new Date()) - t0)
+
+c.setSeed(5201314);
+b.setSeed(5201314);
+
+for (var i = 0; i < 36; i++) {
+  if(c.nextInt() != b.nextInt())
+    throw i
+}
+
+console.log(c.nextInt(), b.nextInt())
+console.log(c.nextInt(), b.nextInt())
+console.log(c.nextInt(), b.nextInt())
