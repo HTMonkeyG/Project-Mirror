@@ -3,8 +3,8 @@ const BlockVolume = require("../../ChunkStorage/BlockVolume.js")
   , { BlockPos, AABB } = require("../../Utils/Structs.js")
   , TheEndGenerator = require("../WorldGenerator/TheEndGenerator.js")
   , StructureFeature = require("./StructureFeature.js")
-  , TemplateStructurePiece = require("./TemplateStructurePiece.js");
-const LegacyStructureSettings = require("./LegacyStructureSettings.js");
+  , TemplateStructurePiece = require("./TemplateStructurePiece.js")
+  , { LegacyStructureSettings } = require("./LegacyStructureSettings.js");
 
 var BoundingBoxes = {
   base_floor: new AABB()

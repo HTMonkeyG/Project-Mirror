@@ -2,3 +2,5 @@ idbBackup*
 */sample.*
 *.dump
 *.vscode/
+SMNodePort*
+*.bak

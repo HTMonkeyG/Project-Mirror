@@ -1,3 +1,16 @@
+const { MT } = require("../Utils/RandomSource");
+
+Array.prototype.randomShuffle = function (random) {
+  for (var i = 1; i < this.length; i++) {
+    var j = random.nextInt(i + 1)
+      , k = this[i];
+    this[i] = this[j];
+    this[j] = k;
+  }
+
+  return this
+};
+
 function tryRead(v, d) {
   return v == void 0 ? d : v;
 }
@@ -39,12 +52,18 @@ class LootTable {
     return result
   }
 
-  shuffleAndSplitItems() {
+  shuffleAndSplitItems(result, index, random) {
 
   }
 
-  getAvaliableSlots() {
+  getAvaliableSlots(container, random) {
+    var result = [];
+    if (container.length)
+      for (var i = 0; i < container.length; i++)
+        if (container[i] == null)
+          result.push(i);
 
+    return result.randomShuffle(random)
   }
 }
 

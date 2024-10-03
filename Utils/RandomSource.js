@@ -59,6 +59,13 @@ class RandomSource {
 
 /** MT-19937 RNG */
 class MT extends RandomSource {
+  static fromChunk(levelSeedLow, chunkPos) {
+    var c = new MT(levelSeedLow)
+      , d = c.nextInt() | 1
+      , e = c.nextInt() | 1;
+    return c.setSeed((d * chunkPos.x + e * chunkPos.z) ^ levelSeedLow);
+  }
+
   constructor(a) {
     super(a);
     null == a && (a = (new Date).getTime()),
@@ -73,9 +80,8 @@ class MT extends RandomSource {
   }
 
   init_seed(a) {
-    this.seed = a;
-    for (this.mt[0] = a >>> 0,
-      this.mti = 1; this.mti < this.N; this.mti++)
+    this.mt[0] = this.seed = a >>> 0;
+    for (this.mti = 1; this.mti < this.N; this.mti++)
       a = this.mt[this.mti - 1] ^ this.mt[this.mti - 1] >>> 30,
         this.mt[this.mti] = (1812433253 * ((4294901760 & a) >>> 16) << 16) + 1812433253 * (65535 & a) + this.mti,
         this.mt[this.mti] >>>= 0
