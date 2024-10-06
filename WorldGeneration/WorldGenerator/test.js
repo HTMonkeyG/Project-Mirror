@@ -1,28 +1,10 @@
+const BlockVolume = require("../../ChunkStorage/BlockVolume.js");
 const { ChunkPos } = require("../../Utils/Structs.js")
   , NetherGenerator = require("./NetherGenerator.js")
-  , NetherGenerator_ = require("./NetherGenerator copy.js")
-  , { TheEndDimension } = require("../Dimensions/Dimensions.js")
+  //, NetherGenerator_ = require("./NetherGenerator.js.bak")
+  , { NetherDimension } = require("../Dimensions/Dimensions.js")
   , fs = require("fs");
 
-var a = new NetherGenerator(new TheEndDimension(), 0x5BD942DD, null)
-var b = new NetherGenerator_(new TheEndDimension(), 0x5BD942DD, null)
-var c;
-c = b.generateDensityCellsForChunk(new ChunkPos(-1, 3))
+var a = new NetherGenerator(new NetherDimension(), 0x5BD942DD, null)
 
-var d = fs.readFileSync("./WorldGeneration/WorldGenerator/test2.dump", "utf-8");
-
-d = d.replace(/[0-9A-F]{16} {7,8}/g, "");
-d = d.replace(/\r\n/g, "       ");
-d = d.split(/ {6,15}/);
-
-for (var i = 0; i < d.length; i++) {
-  d[i] = Number(d[i])
-}
-
-for (var i = 0; i < d.length; i++) {
-  if(Math.abs(c[i] - d[i]) > Math.abs(c[i] * 0.001))
-    throw i;
-}
-var e = [];
-
-//console.log(b.generateDensityCellsForChunk(new ChunkPos(-1, 3)))
+a.prepareHeights(new BlockVolume(16, 128, 16, "air"), new ChunkPos(4, 15))

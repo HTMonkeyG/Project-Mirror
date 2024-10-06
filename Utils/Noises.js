@@ -3,6 +3,12 @@ const { RandomSource } = require("./RandomSource");
 const { Vec2, Vec3 } = require("./Structs.js");
 
 class NoiseCellInterpolator {
+  /**
+   * @param {Float32Array} cells 
+   * @param {Number} maxIndex 
+   * @param {Number} d2 - Distance between each cell in X or Z
+   * @param {Number} d3 - Distance between each cell in Y
+   */
   constructor(cells, maxIndex, d2, d3) {
     this.cells = Float32Array.from(cells);
     this.a1 = new Float32Array(15);

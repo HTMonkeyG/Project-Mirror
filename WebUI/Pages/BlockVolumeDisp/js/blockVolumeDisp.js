@@ -84,7 +84,7 @@ function updateList() {
 }
 
 var xhr = new XMLHttpRequest(), blockVolume = null, r = [];
-xhr.open("POST", "/load-plugin?plugin-path=../WorldGeneration/TheEndGenerator/plugin.js");
+xhr.open("POST", "/load-plugin?plugin-path=../WorldGeneration/WorldGenerator/plugin.js");
 
 xhr.onload = function (e) {
   console.log(e);

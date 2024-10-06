@@ -1,13 +1,25 @@
 const Mth = require("./MathEx.js")
 
 class ChunkPos {
+  static fromBlockPos(blockPos) {
+    return new ChunkPos(blockPos.x >> 4, blockPos.z >> 4)
+  }
+
+  static copy(chunkPos) {
+    return new ChunkPos(chunkPos.x, chunkPos.z)
+  }
+
   constructor(x, z) {
     this.x = x;
     this.z = z
   }
 
-  fromBlockPos() {
+  isWithinBounds(a2, a3) {
+    if (this.x >= a2.x && this.x <= a3.x)
+      if (this.z >= a2.z && this.z <= a3.z)
+        return true
 
+    return false;
   }
 
   toString() {
@@ -24,6 +36,10 @@ class ChunkBlockPos {
 
   toPos() {
     return new BlockPos(this.x, this.y, this.z)
+  }
+
+  toString() {
+    return `[ChunkBlockPos ${this.x}, ${this.y}, ${this.z}]`
   }
 }
 
@@ -80,7 +96,7 @@ class Vec3 {
    * 
    * Also can be used for construct Vec3 from vec3-like objects.
    * @param {*} vec3 
-   * @returns 
+   * @returns {Vec3}
    */
   static copy(vec3) {
     return new Vec3(vec3.x, vec3.y, vec3.z)
@@ -292,22 +308,61 @@ class AABB {
     )
   }
 
+  static fromPoints(p1, p2) {
+    return new AABB(
+      Math.min(p1.x, p2.x),
+      Math.min(p1.y, p2.y),
+      Math.min(p1.z, p2.z),
+      Math.max(p1.x, p2.x),
+      Math.max(p1.y, p2.y),
+      Math.max(p1.z, p2.z)
+    )
+  }
+
   constructor(x1, y1, z1, x2, y2, z2) {
-    this.p1 = new Vec3(
-      Math.min(x1, x2),
-      Math.min(y1, y2),
-      Math.min(z1, z2)
-    );
-    this.p2 = new Vec3(
-      Math.max(x1, x2),
-      Math.max(y1, y2),
-      Math.max(z1, z2)
+    if (typeof y1 == "number" && typeof x1 == "object") {
+      this.p1 = Vec3.copy(x1);
+      this.p2 = Vec3.copy(x1).add(y1)
+    } else if (typeof y1 == "object" && typeof x1 == "object") {
+      this.p1 = Vec3.copy(x1);
+      this.p2 = Vec3.copy(y1)
+    } else {
+      this.p1 = new Vec3(x1, y1, z1);
+      this.p2 = new Vec3(x2, y2, z2);
+    }
+  }
+
+  getVolume() {
+    return (this.p2.x - this.p1.x) * (this.p2.y - this.p1.y) * (this.p2.z - this.p1.z)
+  }
+
+  getSize() {
+    return ((this.p2.y - this.p1.y) + (this.p2.x - this.p1.x) + (this.p2.z - this.p1.z)) / 3
+  }
+
+  getCenter() {
+    return new Vec3(
+      (this.p2.x - this.p1.x) / 2 + this.p1.x,
+      (this.p2.y - this.p1.y) / 2 + this.p1.y,
+      (this.p2.z - this.p1.z) / 2 + this.p1.z
+    )
+  }
+
+  getBounds() {
+    return new Vec3(
+      this.p2.x - this.p1.x,
+      this.p2.y - this.p1.y,
+      this.p2.z - this.p1.z
     );
   }
 
   move(vec3) {
     this.p1 = this.p1.add(vec3);
     this.p2 = this.p2.add(vec3)
+  }
+
+  toString() {
+    return `[AABB ${this.p1.x}, ${this.p1.y}, ${this.p1.z} to ${this.p2.x}, ${this.p2.y}, ${this.p2.z}]`
   }
 }
 

@@ -1,5 +1,6 @@
 const TheEndGenerator = require("../WorldGenerator/TheEndGenerator.js")
   , EndCityFeature = require("../StructureFeature/EndCityFeature.js")
+  , NetherGenerator = require("../WorldGenerator/NetherGenerator.js")
   , WorldGenerator = require("../WorldGenerator/WorldGenerator.js");
 
 class Dimension {
@@ -8,6 +9,7 @@ class Dimension {
     this.minHeight = 0;
     this.height = 256;
     this.generator = null;
+    this.seaLevel = 64;
   }
 
   getMinHeight() {
@@ -26,6 +28,25 @@ class Dimension {
   }
 
   createGenerator() { }
+}
+
+class NetherDimension extends Dimension {
+  constructor(levelSeed) {
+    super(levelSeed);
+    this.maxHeight = 128;
+    this.height = 256;
+    this.seaLevel = 32;
+  }
+
+  makeStructureFeatures(seed) {
+    return []
+  }
+
+  createGenerator() {
+    var result = new NetherGenerator(this, this.seed.low, null);
+    this.generator = result;
+    return result;
+  }
 }
 
 class TheEndDimension extends Dimension {
@@ -48,3 +69,4 @@ class TheEndDimension extends Dimension {
 
 exports.Dimension = Dimension;
 exports.TheEndDimension = TheEndDimension;
+exports.NetherDimension = NetherDimension;
