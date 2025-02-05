@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<p id="progress"></p>
+<p id="esti-time"></p>
+<input id="shelves" type="number" placeholder="Shelves" min="0" max="15"><br>
+<input id="lvl-1" type="number" placeholder="Cost 1" min="0" max="30"><br>
+<input id="lvl-2" type="number" placeholder="Cost 2" min="0" max="30"><br>
+<input id="lvl-3" type="number" placeholder="Cost 3" min="0" max="30"><br>
+<button id="confirm">start</button><br>
+<button id="reset">reset</button><br>
+<p id="seeds-ctr"></p>
+
+<script src="./worker-a-min.js"></script>
+<script>
+  var workers = []
+    , maxThread = navigator.hardwareConcurrency - 1
+    , running = false
+    , firstInput = true
+    , completed = 0
+    , percents = []
+    , progress = 0
+    , possibleSeeds = 0
+    , t0 = 0
+    , inputs = [
+      document.getElementById("shelves"),
+      document.getElementById("lvl-1"),
+      document.getElementById("lvl-2"),
+      document.getElementById("lvl-3")
+    ];
+
+  maxThread = Math.max(1, maxThread);
+  console.log(maxThread)
+
+  for (workers = [], i = 0; i < maxThread; i++)
+    workers[i] = new Worker(window.URL.createObjectURL(inlineWorker));
+
+  function finish() {
+    firstInput && (firstInput = false);
+    running = 0;
+    completed = 0;
+    percents.forEach((a, b) => percents[b] = 0);
+    progress = 100;
+    document.getElementById("progress").innerText = "100.000%";
+    document.getElementById("esti-time").innerText = "0s";
+    inputs.forEach(_ => _.readOnly = false);
+  }
+
+  workers.forEach(function (a, b) {
+    percents[b] = 0;
+    a.addEventListener("message", function (c) {
+      if (c.data.type == "progress") {
+        percents[b] = c.data.percent;
+        progress = percents.reduce((a, b) => a + b, 0) / maxThread * 100;
+        document.getElementById("progress").innerText = progress.toFixed(3) + "%";
+        document.getElementById("esti-time").innerText = ((100 - progress) / progress * ((new Date()) - t0) / 1000).toFixed(3) + "s";
+      } else if (c.data.type == "result") {
+        completed++;
+        possibleSeeds += c.data.seeds.length;
+        if (completed >= maxThread)
+          finish();
+      }
+    }, !1)
+  });
+
+  document.getElementById("confirm").onclick = function () {
+    if (!running) {
+      running = true;
+      completed = 0;
+      inputs.forEach(_ => _.readOnly = true);
+
+      var effectiveBlock = Number(inputs[0].value)
+        , costs = [
+          Number(inputs[1].value),
+          Number(inputs[2].value),
+          Number(inputs[3].value)
+        ];
+
+      t0 = new Date();
+
+      if (firstInput) {
+        var m = (2 ** 32)
+          , blockLength = Math.floor(m / maxThread)
+          , tail = m % blockLength;
+        if (maxThread > 1)
+          for (var i = 0, j = 0; j < maxThread - 1; i += blockLength, j++) {
+            workers[j].postMessage({
+              type: "first",
+              blockLength: blockLength,
+              costs: costs,
+              minSeed: i,
+              effectiveBlock: effectiveBlock,
+            });
+          }
+
+        workers[maxThread - 1].postMessage({
+          type: "first",
+          blockLength: blockLength + tail,
+          costs: costs,
+          minSeed: i || 0,
+          effectiveBlock: effectiveBlock,
+        });
+      } else {
+        for (var j = 0; j < maxThread; j++) {
+          workers[j].postMessage({
+            type: "addition",
+            costs: costs,
+            effectiveBlock: effectiveBlock
+          });
+        }
+      }
+    }
+  };
+</script>

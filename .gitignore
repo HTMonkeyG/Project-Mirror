@@ -4,3 +4,5 @@ idbBackup*
 *.vscode/
 SMNodePort*
 *.bak
+Project-Mirror-Pic
+node_modules/

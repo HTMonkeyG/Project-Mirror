@@ -93,6 +93,10 @@ class NetherGenerator extends WorldGenerator {
 
     return blockVolume
   }
+
+  loadChunk(chunkPos) {
+    
+  }
 }
 
 module.exports = NetherGenerator;

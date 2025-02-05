@@ -124,8 +124,9 @@ class ImprovedNoise {
       , d12 = d3 + this.zo - n3;
 
     return this.sampleAndLerp(
-      n, n2, n3,    // Integer part
-      d10, d11, d12 // Fractional part
+      n, n2, n3,     // Integer part
+      d10, d11, d12, // Fractional part
+      d11
     );
   }
 

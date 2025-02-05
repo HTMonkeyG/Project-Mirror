@@ -19,35 +19,38 @@ for (var i = 0; i < 1000000; i++) {
   a.setSeed(i); //a.nextInt()
 }
 
-console.log((new Date()) - t0)
+console.log("Wasm MT", (new Date()) - t0)
 
 var t0 = new Date();
 for (var i = 0; i < 1000000; i++) {
   b.setSeed(i); //b.nextInt()
 }
 
-console.log((new Date()) - t0)
+console.log("Simplified MT 1", (new Date()) - t0)
 
 t0 = new Date();
 for (var i = 0; i < 1000000; i++) {
   c.setSeed(i); //c.nextInt()
 }
-console.log((new Date()) - t0)
+console.log("Standard MT", (new Date()) - t0)
 
 t0 = new Date();
 for (var i = 0; i < 1000000; i++) {
   d.setSeed(i); //d.nextInt()
 }
-console.log((new Date()) - t0)
+console.log("Simplified MT 2", (new Date()) - t0)
 
-c.setSeed(5201314);
+a.setSeed(5201314);
 b.setSeed(5201314);
+c.setSeed(5201314);
+d.setSeed(5201314);
 
 for (var i = 0; i < 36; i++) {
-  if(c.nextInt() != b.nextInt())
-    throw i
+  if (d.nextInt(15) != a.nextInt(15));
+    //throw i
 }
 
-console.log(c.nextInt(), b.nextInt())
-console.log(c.nextInt(), b.nextInt())
-console.log(c.nextInt(), b.nextInt())
+console.log(a.nextInt(15), b.nextInt(15), c.nextInt(15), d.nextInt(15))
+console.log(a.nextInt(15), b.nextInt(15), c.nextInt(15), d.nextInt(15))
+console.log(a.nextInt(15), b.nextInt(15), c.nextInt(15), d.nextInt(15))
+console.log(a.nextInt(15), b.nextInt(15), c.nextInt(15), d.nextInt(15))

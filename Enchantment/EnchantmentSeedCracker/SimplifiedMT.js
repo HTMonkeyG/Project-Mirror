@@ -153,9 +153,7 @@ class SimplifiedMT extends RandomSource {
     /*var b = this.random_int();
     b = b < 0 ? !b + 1 : b;
     return b % a*/
-    var b;
-    return null == a ? this.random_int() >>> 1 : (b = this.random_int(),
-      Long.fromInt(b).and(Long.fromNumber(4294967295)).toNumber() % a);
+    return null == a ? this.random_int() >>> 1 : ((this.random_int() >>> 0) % a);
   }
 }
 
