@@ -1,9 +1,10 @@
-const Mth = require("../../Utils/MathEx.js")
-  , { PerlinNoise, SimplexNoise, NoiseCellInterpolator } = require("../../Utils/Noises.js")
-  , { MT } = require("../../Utils/RandomSource.js")
-  , { ChunkBlockPos, BlockPos, Vec3, ChunkPos } = require("../../Utils/Structs.js")
+const PMU = require("../../Packages/Utils")
+  , Mth = PMU.Mth
+  , { PerlinNoise, SimplexNoise, NoiseCellInterpolator } = PMU.Noises
+  , { MT } = PMU.RandomSource
+  , { ChunkBlockPos, BlockPos, Vec3, ChunkPos } = PMU.Structs
   , WorldGenerator = require("./WorldGenerator.js")
-  , BlockVolume = require("../../ChunkStorage/BlockVolume.js");
+  , BlockVolume = require("../../Packages/Utils/includes/WorldUtils/BlockVolume.js");
 
 class TheEndGenerator extends WorldGenerator {
   /**
@@ -110,19 +111,20 @@ class TheEndGenerator extends WorldGenerator {
 
   prepareHeights(blockVolume, chunkPos) {
     var densityCell = this.generateDensityCellsForChunk(chunkPos)
-      , interpolator = new NoiseCellInterpolator(densityCell, 297, 8, 4);
+      , interpolator = new NoiseCellInterpolator(densityCell, 297, 8, 4)
+      , xCH, xCL, yCH, yCL, zCH, zCL, xP, zP;
 
-    for (var xCH = 0; xCH < 2; xCH++) {
-      for (var zCH = 0; zCH < 2; zCH++) {
-        for (var yCH = 0, v23 = 33 * (zCH + 3 * xCH); yCH < 32; yCH++, v23++) {
+    for (xCH = 0; xCH < 2; xCH++) {
+      for (zCH = 0; zCH < 2; zCH++) {
+        for (yCH = 0, v23 = 33 * (zCH + 3 * xCH); yCH < 32; yCH++, v23++) {
           interpolator.selectCellXZ(v23, v23 + 33, v23 + 99, v23 + 132);
-          for (var zCL = 0; zCL < 8; zCL++) {
-            var zP = 8 * zCH + zCL;
+          for (zCL = 0; zCL < 8; zCL++) {
+            zP = 8 * zCH + zCL;
             interpolator.updateForZ(zCL);
-            for (var xCL = 0; xCL < 8; xCL++) {
-              var xP = 8 * xCH + xCL;
+            for (xCL = 0; xCL < 8; xCL++) {
+              xP = 8 * xCH + xCL;
               interpolator.updateForX(xCL);
-              for (var yCL = 0; yCL < 4; yCL++) {
+              for (yCL = 0; yCL < 4; yCL++) {
                 var pos = new ChunkBlockPos(xP, yCH * 4 + yCL, zP)
                   //v35 = BedrockBlocks::mAir;
                   , blockData = "air";
@@ -156,6 +158,7 @@ class TheEndGenerator extends WorldGenerator {
   loadChunk(chunkPos) {
     var result = new BlockVolume(16, 256, 16, 'air');
     this.prepareHeights(result, chunkPos);
+    this.buildSurfaces();
     return result
   }
 

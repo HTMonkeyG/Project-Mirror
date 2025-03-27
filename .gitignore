@@ -1,8 +1,14 @@
-idbBackup*
+# Files
 */sample.*
 *.dump
-*.vscode/
-SMNodePort*
 *.bak
-Project-Mirror-Pic
+
+# Directories
 node_modules/
+.vscode/
+
+# Root directories
+/IDA/
+/SMNodePort/
+/Pictures/
+/Packages/

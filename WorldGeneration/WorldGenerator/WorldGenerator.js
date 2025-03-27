@@ -12,11 +12,13 @@ class WorldGenerator {
 
   prepareHeights() { }
 
-  loadChunk() { }
+  loadChunk(chunkPos) { }
 
   postProcess() { }
 
   getPreliminarySurfaceLevel() { }
+
+  buildSurfaces() {}
 
   getBlockVolumeDimensions() {
     return new Vec3(16, 256, 16)

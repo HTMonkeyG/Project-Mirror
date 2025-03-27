@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/HTMonkeyG/Project-Mirror#readme",
   "dependencies": {
+    "bedrock-protocol": "^3.43.1",
     "parsenbt-js": "^3.1.0",
     "project-mirror-registry": "^1.1.1"
   }

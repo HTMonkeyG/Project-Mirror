@@ -1,7 +1,8 @@
-const Mth = require("../../Utils/MathEx.js")
-  , { PerlinNoise, NoiseCellInterpolator } = require("../../Utils/Noises.js")
-  , { ChunkBlockPos } = require("../../Utils/Structs.js")
-  , { MT } = require("../../Utils/RandomSource.js")
+const PMU = require("../../Packages/Utils")
+  , Mth = PMU.Mth
+  , { PerlinNoise, NoiseCellInterpolator } = PMU.Noises
+  , { ChunkBlockPos } = PMU.Structs
+  , { MT } = PMU.RandomSource
   , WorldGenerator = require("./WorldGenerator.js");
 
 class NetherGenerator extends WorldGenerator {
@@ -76,11 +77,13 @@ class NetherGenerator extends WorldGenerator {
               for (var yCL = 0; yCL < 8; yCL++) {
                 var yP = yCH * 8 + yCL
                   , pos = new ChunkBlockPos(xP, yP, zP)
+                  // Strange but original C++ code as below.
                   , blockData = "stone";
                 interpolator.lerpFor(yCL);
                 if (interpolator.getLerpedValue() <= 0.0) {
                   blockData = "air";
                   if (yP < this.dimension.seaLevel)
+                    // WTF?
                     blockData = "water";
                 }
                 blockVolume.data[blockVolume.index(pos)] = blockData;
@@ -95,7 +98,7 @@ class NetherGenerator extends WorldGenerator {
   }
 
   loadChunk(chunkPos) {
-    
+
   }
 }
 
