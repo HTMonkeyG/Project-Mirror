@@ -1,0 +1,42 @@
+import { RandomSource } from "./RandomSource";
+
+export declare namespace Mth {
+  function clamp(n: number, n2: number, n3: number): number;
+  function clampedLerp(d: number, d2: number, d3: number): number;
+  function absMax(d: number, d2: number): number;
+  function floorDiv(n: number, n2: number): number;
+  function equal(d: number, d2: number): number;
+  function positiveModulo(d: number, d2: number): number;
+  function isMultipleOf(n: number, n2: number): number;
+  function wrapDegrees(d): number;
+  function degreesDifference(f: number, f2: number): number;
+  function degreesDifferenceAbs(f: number, f2: number): number;
+  function rotateIfNecessary(f: number, f2: number, f3: number): number;
+  function approach(f: number, f2: number, f3: number): number;
+  function approachDegrees(f: number, f2: number, f3: number): number;
+  function getInt(string: string, n: number): number;
+  function smallestEncompassingPowerOfTwo(n: number): number;
+  function isPowerOfTwo(n: number): boolean;
+  function inverseLerp(d: number, d2: number, d3: number): number;
+  function lerpInt(f: number, n: number, n2: number): number;
+  function lerpDiscrete(f: number, n: number, n2: number): number;
+  function lerp(f: number, f2: number, f3: number): number;
+  function lerp2(d: number, d2: number, d3: number, d4: number, d5: number, d6: number): number;
+  function lerp3(d: number, d2: number, d3: number, d4: number, d5: number, d6: number, d7: number, d8: number, d9: number, d10: number, d11: number): number;
+  function catmullrom(f: number, f2: number, f3: number, f4: number, f5: number): number;
+  function smoothstep(d: number): number;
+  function smoothstepDerivative(d: number): number;
+  function sign(d: number): number;
+  function rotLerp(f: number, f2: number, f3: number): number;
+  function rotLerp(d: number, d2: number, d3: number): number;
+  function triangleWave(f: number, f2: number): number;
+  function square(f: number): number;
+  function clampedMap(d: number, d2: number, d3: number, d4: number, d5: number): number;
+  function map(d: number, d2: number, d3: number, d4: number, d5: number): number;
+  function randomBetweenInclusive(randomSource: RandomSource, n: number, n2: number): number;
+  function randomBetween(randomSource: RandomSource, f: number, f2: number): number;
+  function normal(randomSource: RandomSource, f: number, f2: number): number;
+  function lengthSquared(...args: number[]): number;
+  function length(...args: number[]): number;
+  function quantize(d: number, n: number): number;
+}
