@@ -23,7 +23,7 @@ const {
   RotationUtils
 } = require("./Src/RotationUtils.js");
 const { BlockVolume } = require("./Src/WorldUtils/BlockVolume.js");
-const { SubChunkStoragePaletted } = require("./main.js");
+const { SubChunkStoragePaletted } = require("./Src/WorldUtils/SubChunkStoragePaletted.js");
 
 module.exports = {
   // RandomSource.js
