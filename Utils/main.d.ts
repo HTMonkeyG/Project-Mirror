@@ -23,3 +23,7 @@ export {
 export {
   BlockPosIterator
 } from "./Src/BlockPosIterator";
+export {
+  Facing,
+  RotationUtils
+} from "./Src/RotationUtils";

@@ -17,7 +17,11 @@ const {
   Vec3,
   AABB
 } = require("./Src/Structs.js")
-const Mth = require("./includes/MathEx.js");
+const Mth = require("./Src/MathEx.js");
+const {
+  Facing,
+  RotationUtils
+} = require("./Src/RotationUtils.js");
 
 module.exports = {
   // RandomSource.js
@@ -40,5 +44,9 @@ module.exports = {
   AABB,
 
   // Mth.js
-  Mth
+  Mth,
+
+  // RotationUtils.js
+  Facing,
+  RotationUtils
 };

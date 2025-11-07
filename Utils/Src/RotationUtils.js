@@ -15,6 +15,7 @@ var RotationUtils = {
     return Facing.getCounterClockWise(a2);
   }
 };
+
 var Facing = {
   getClockWise(a1) {
     if (a1 == 2)
@@ -56,5 +57,7 @@ var Facing = {
   }
 };
 
-exports.Facing = Facing;
-exports.RotationUtils = RotationUtils;
+exports = {
+  Facing,
+  RotationUtils
+};
