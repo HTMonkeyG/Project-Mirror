@@ -13,6 +13,10 @@ var RotationUtils = {
     if (v4 != 1)
       return a2;
     return Facing.getCounterClockWise(a2);
+  },
+
+  getRotated(baseRotation, additionalRotation) {
+    return 90 * (baseRotation + additionalRotation) % 360 / 90;
   }
 };
 
@@ -57,7 +61,7 @@ var Facing = {
   }
 };
 
-exports = {
+module.exports = {
   Facing,
   RotationUtils
 };

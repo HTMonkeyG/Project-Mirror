@@ -220,6 +220,8 @@ export declare class AABB {
     p2: { x: number, y: number, z: number }
   ): AABB;
   constructor(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number);
+  p1: Vec3;
+  p2: Vec3;
   getVolume(): number;
   getSize(): number;
   getCenter(): Vec3

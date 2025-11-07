@@ -6,4 +6,5 @@ export declare namespace Facing {
 
 export declare namespace RotationUtils {
   function rotate(a1: number, a2: number): number;
+  function getRotated(baseRotation: number, additionalRotation: number): number;
 }
