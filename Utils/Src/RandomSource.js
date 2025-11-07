@@ -1,4 +1,4 @@
-const Long = require("./Long.js");
+const Long = require("long");
 
 /**
  * Template class for RNGs
