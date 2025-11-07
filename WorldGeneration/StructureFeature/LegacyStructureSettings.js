@@ -5,6 +5,7 @@ class LegacyStructureSettings {
     var result = new LegacyStructureSettings();
     result.mirror = settings.mirror;
     result.rotation = settings.rotation;
+    return result
   }
 
   constructor() {
@@ -65,7 +66,7 @@ class LegacyStructureTemplate {
         v16 ^= 0x80000000;
         break;
     }
-    var v20 = BlockPos(v14, blockPos.y, v16);
+    var v20 = new BlockPos(v14, blockPos.y, v16);
     return new BlockPos(
       v21.x - v20.x,
       v21.y - v20.y,
@@ -85,15 +86,15 @@ class LegacyStructureTemplate {
   getSize(rotation) {
     if (rotation == 1 || rotation == 3)
       return {
-        x: this.z,
-        y: this.y,
-        z: this.x
+        x: this.size.z,
+        y: this.size.y,
+        z: this.size.x
       }
     else
       return {
-        x: this.x,
-        y: this.y,
-        z: this.z
+        x: this.size.x,
+        y: this.size.y,
+        z: this.size.z
       }
   }
 }

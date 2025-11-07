@@ -8,17 +8,16 @@ const { LegacyStructureSettings } = require("./LegacyStructureSettings.js");
 const { StructurePiece } = require("./StructurePiece.js");
 
 class TemplateStructurePiece extends StructurePiece {
-  constructor(a) {
+  constructor() {
     super();
 
-    this.a = a;
     this.boundingBox = new AABB(0, 0, 0, 0, 0, 0);
     this.origin = new BlockPos(0);
     this.settings = null;
     this.template = null;
   }
 
-  setup(template, settings, pos) {
+  _setup(template, settings, pos) {
     this.template = template;
     this.settings = LegacyStructureSettings.copy(settings)
     this.origin = BlockPos.copy(pos);
@@ -31,7 +30,7 @@ class TemplateStructurePiece extends StructurePiece {
       , mirror = this.settings.getMirror();
 
     this.boundingBox.p1 = new Vec3(0, 0, 0);
-    this.boundingBox.p2 = new Vec3(0, 0, 0);
+    this.boundingBox.p2 = Vec3.copy(size).sub(new Vec3(0, 1, 0));
     switch (rotation) {
       case 1:
         this.boundingBox.p1.x -= size.x;
@@ -49,33 +48,40 @@ class TemplateStructurePiece extends StructurePiece {
         break;
     }
 
-    var d, v11, v12 = size.x;
+    // Strange coordinate transform.
+    var len = size.x
+      , dir = mirror
+      , offset = new BlockPos(0, 0, 0);
     if (mirror == 1) {
-      if (((rotate - 1) & 0xFD) != 0) {
-        v12 = size.z;
+      if (rotation != 1 || rotation != 3) {
+        len = size.z;
         if (rotate == 2)
-          d = 3;
+          dir = 3;
         else
-          d = 2;
+          dir = 2;
       } else
-        d = RotationUtils.rotate(rotate, 2);
+        dir = RotationUtils.rotate(rotate, 2);
+      offset = offset.relative(dir, len);
     } else if (mirror == 2) {
-      if (((rotate - 1) & 0xFD) != 0) {
+      if (rotation != 1 || rotation != 3) {
         if (rotate == 2)
-          d = 5;
+          dir = 5;
         else
-          d = 4;
+          dir = 4;
       } else {
-        d = RotationUtils.rotate(rotate, 4);
-        v12 = size.z;
+        dir = RotationUtils.rotate(rotate, 4);
+        len = size.z;
       }
+      offset = offset.relative(dir, len);
     }
 
-    v11 = (new BlockPos(0, 0, 0)).relative(d, v12);
-    this.boundingBox.p1.x += v11.x;
-    this.boundingBox.p1.z += v11.z;
-    this.boundingBox.p2.x += v11.x;
-    this.boundingBox.p2.z += v11.z;
+    this.boundingBox.p1.x += offset.x;
+    this.boundingBox.p1.z += offset.z;
+    this.boundingBox.p2.x += offset.x;
+    this.boundingBox.p2.z += offset.z;
+
+    this.boundingBox.p1 = this.boundingBox.p1.add(this.origin);
+    this.boundingBox.p2 = this.boundingBox.p2.add(this.origin);
   }
 
   moveBoundingBox(x, y, z) {
@@ -83,6 +89,10 @@ class TemplateStructurePiece extends StructurePiece {
     this.origin.x += x;
     this.origin.y += y;
     this.origin.z += z;
+  }
+
+  postProcess() {
+
   }
 }
 
