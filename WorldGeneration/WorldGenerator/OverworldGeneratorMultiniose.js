@@ -1,6 +1,6 @@
 const BlockVolume = require("../../ChunkStorage/BlockVolume.js");
 const { BlockPos, ChunkPos } = require("../../Utils/Structs.js")
-  , Long = require('../../Utils/Long.js')
+  , Long = require("long")
   , { MT } = require("../../Utils/RandomSource.js");
 
 function placeBedrockFloor(random, blockVolume, worldPos) {

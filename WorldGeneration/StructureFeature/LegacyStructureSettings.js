@@ -1,4 +1,4 @@
-const { BlockPos } = require("../../Utils/Structs");
+const { BlockPos } = require("project-mirror-utils");
 
 class LegacyStructureSettings {
   static copy(settings) {

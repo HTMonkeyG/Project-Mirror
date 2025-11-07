@@ -1,10 +1,16 @@
-const PMU = require("../../Packages/Utils")
-  , Mth = PMU.Mth
-  , { PerlinNoise, SimplexNoise, NoiseCellInterpolator } = PMU.Noises
-  , { MT } = PMU.RandomSource
-  , { ChunkBlockPos, BlockPos, Vec3, ChunkPos } = PMU.Structs
-  , WorldGenerator = require("./WorldGenerator.js")
-  , BlockVolume = require("../../Packages/Utils/includes/WorldUtils/BlockVolume.js");
+const {
+  Mth,
+  PerlinNoise,
+  SimplexNoise,
+  NoiseCellInterpolator,
+  MT,
+  ChunkBlockPos,
+  BlockPos,
+  Vec3,
+  ChunkPos,
+  BlockVolume
+} = require("project-mirror-utils");
+const { WorldGenerator } = require("./WorldGenerator.js");
 
 class TheEndGenerator extends WorldGenerator {
   /**
@@ -170,4 +176,4 @@ class TheEndGenerator extends WorldGenerator {
   }
 }
 
-module.exports = TheEndGenerator;
+module.exports = { TheEndGenerator };

@@ -1,6 +1,9 @@
-const { MT, RandomSource } = require("../../Utils/RandomSource.js")
-  , Long = require("../../Utils/Long.js");
-const { ChunkPos } = require("../../Utils/Structs.js");
+const Long = require("long");
+const {
+  ChunkPos,
+  MT,
+  RandomSource
+} = require("project-mirror-utils");
 
 class StructureFeature {
   /**
@@ -77,4 +80,6 @@ class StructureFeature {
   isFeatureChunk(random, chunkPos, levelSeedLow, dimension, generator) { }
 }
 
-module.exports = StructureFeature;
+module.exports = {
+  StructureFeature
+};

@@ -1,9 +1,11 @@
-const PMU = require("../../Packages/Utils")
-  , Mth = PMU.Mth
-  , { PerlinNoise, NoiseCellInterpolator } = PMU.Noises
-  , { ChunkBlockPos } = PMU.Structs
-  , { MT } = PMU.RandomSource
-  , WorldGenerator = require("./WorldGenerator.js");
+const {
+  Mth,
+  PerlinNoise,
+  NoiseCellInterpolator,
+  MT,
+  ChunkBlockPos,
+} = require("project-mirror-utils");
+const { WorldGenerator } = require("./WorldGenerator.js");
 
 class NetherGenerator extends WorldGenerator {
   constructor(dimension, levelSeedLow, biome) {
@@ -102,4 +104,4 @@ class NetherGenerator extends WorldGenerator {
   }
 }
 
-module.exports = NetherGenerator;
+module.exports = { NetherGenerator };

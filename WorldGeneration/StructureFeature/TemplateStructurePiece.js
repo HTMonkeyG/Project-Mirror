@@ -1,9 +1,16 @@
-const { AABB, Vec3, BlockPos } = require("../../Utils/Structs.js")
-  , { RotationUtils } = require("../../Utils/RotationUtils.js")
-  , { LegacyStructureSettings } = require("./LegacyStructureSettings.js");
+const {
+  AABB,
+  Vec3,
+  BlockPos,
+  RotationUtils
+} = require("project-mirror-utils")
+const { LegacyStructureSettings } = require("./LegacyStructureSettings.js");
+const { StructurePiece } = require("./StructurePiece.js");
 
-class TemplateStructurePiece {
+class TemplateStructurePiece extends StructurePiece {
   constructor(a) {
+    super();
+
     this.a = a;
     this.boundingBox = new AABB(0, 0, 0, 0, 0, 0);
     this.origin = new BlockPos(0);
@@ -79,4 +86,4 @@ class TemplateStructurePiece {
   }
 }
 
-module.exports = TemplateStructurePiece;
+module.exports = { TemplateStructurePiece };

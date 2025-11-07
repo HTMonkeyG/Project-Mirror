@@ -1,5 +1,5 @@
 const { TheEndDimension } = require("./Dimensions/Dimensions.js")
-  , Long = require("../Utils/Long.js");
+  , Long = require("long");
 
 var a = new TheEndDimension(Long.fromString("5BD942DD", 16));
 

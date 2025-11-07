@@ -1,10 +1,8 @@
-const BlockVolume = require("../../ChunkStorage/BlockVolume.js")
-  , { MT } = require("../../Utils/RandomSource.js")
-  , { BlockPos, AABB } = require("../../Utils/Structs.js")
-  , TheEndGenerator = require("../WorldGenerator/TheEndGenerator.js")
-  , StructureFeature = require("./StructureFeature.js")
-  , TemplateStructurePiece = require("./TemplateStructurePiece.js")
-  , { LegacyStructureSettings } = require("./LegacyStructureSettings.js");
+const { BlockVolume, MT, BlockPos, AABB } = require("project-mirror-utils");
+const { TheEndGenerator } = require("../WorldGenerator/TheEndGenerator.js");
+const { StructureFeature } = require("./StructureFeature.js");
+const { TemplateStructurePiece } = require("./TemplateStructurePiece.js");
+const { LegacyStructureSettings } = require("./LegacyStructureSettings.js");
 
 var BoundingBoxes = {
   base_floor: new AABB()
@@ -167,4 +165,6 @@ function HouseTowerGenerator() {
 
 }
 
-module.exports = EndCityFeature;
+module.exports = {
+  EndCityFeature
+};

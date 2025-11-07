@@ -1,4 +1,4 @@
-const { Vec3 } = require("../../Utils/Structs");
+const { Vec3 } = require("project-mirror-utils");
 
 class WorldGenerator {
   constructor(dimension, levelSeedLow, biome) {
@@ -18,7 +18,7 @@ class WorldGenerator {
 
   getPreliminarySurfaceLevel() { }
 
-  buildSurfaces() {}
+  buildSurfaces() { }
 
   getBlockVolumeDimensions() {
     return new Vec3(16, 256, 16)
@@ -35,4 +35,4 @@ class WorldGenerator {
   }
 }
 
-module.exports = WorldGenerator;
+module.exports = { WorldGenerator };
