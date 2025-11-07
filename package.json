@@ -22,7 +22,11 @@
   "homepage": "https://github.com/HTMonkeyG/Project-Mirror#readme",
   "dependencies": {
     "bedrock-protocol": "^3.43.1",
+    "long": "^5.3.2",
     "parsenbt-js": "^3.1.0",
     "project-mirror-registry": "^1.1.1"
-  }
+  },
+  "workspaces": [
+    "Utils"
+  ]
 }
