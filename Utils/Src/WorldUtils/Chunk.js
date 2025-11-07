@@ -35,4 +35,6 @@ class LevelChunk {
   }
 }
 
-module.exports = LevelChunk;
+module.exports = {
+  LevelChunk
+};

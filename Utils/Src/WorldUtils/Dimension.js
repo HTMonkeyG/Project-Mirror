@@ -20,3 +20,7 @@ class Dimension {
     }
   }
 }
+
+module.exports = {
+  Dimension
+};

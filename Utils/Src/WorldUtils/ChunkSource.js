@@ -4,4 +4,6 @@ class ChunkSource {
   }
 }
 
-module.exports = ChunkSource;
+module.exports = {
+  ChunkSource
+};

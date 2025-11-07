@@ -61,4 +61,6 @@ class BlockVolume {
   }
 }
 
-module.exports = BlockVolume;
+module.exports = {
+  BlockVolume
+};

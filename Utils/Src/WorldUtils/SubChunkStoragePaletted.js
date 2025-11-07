@@ -42,4 +42,6 @@ class SubChunkStoragePaletted {
   }
 }
 
-module.exports = SubChunkStoragePaletted;
+module.exports = {
+  SubChunkStoragePaletted
+};

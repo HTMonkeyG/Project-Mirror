@@ -27,3 +27,9 @@ export {
   Facing,
   RotationUtils
 } from "./Src/RotationUtils";
+export {
+  BlockVolume
+} from "./Src/WorldUtils/BlockVolume";
+export {
+  SubChunkStoragePaletted
+} from "./Src/WorldUtils/SubChunkStoragePaletted";
